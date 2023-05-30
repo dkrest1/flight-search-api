@@ -11,6 +11,8 @@
   "author": "oluatosin akande <aktosin1@gmail.com>",
   "license": "ISC",
   "dependencies": {
+    "amadeus": "^8.0.0",
+    "axios": "^1.4.0",
     "bcryptjs": "^2.4.3",
     "chalk": "^5.2.0",
     "cors": "^2.8.5",

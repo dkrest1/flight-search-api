@@ -1,4 +1,4 @@
-import Usermodal from "../models/userModel.js"
+import Usermodal from "../model/user.model.js"
 import {
     generatePayloadFromToken,
 } from "../utils/helper.utils.js"

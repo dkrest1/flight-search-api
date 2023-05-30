@@ -1,7 +1,7 @@
 import crypto from "crypto"
-import sendMail from "./emailService.js"
-import userModal from "../models/userModel.js"
-import TokenModal from "../models/tokenModel.js"
+import sendMail from "./email.service.js"
+import userModal from "../model/user.model.js"
+import TokenModal from "../model/token.model.js"
 import {
     passwordToHash,
     compareBcryptPassword
