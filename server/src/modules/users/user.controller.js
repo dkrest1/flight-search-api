@@ -1,5 +1,5 @@
 import Joi from "joi";
-import UserModal from "../model/user.model.js";;
+import UserModal from "./model/user.model.js";;
 import {
     passwordToHash,
     compareBcryptPassword,
@@ -8,7 +8,7 @@ import {
 
 
 //@description: create user
-//@route : /users/signup
+//@route : /user/create
 //@access: public
 export const createUser = async (req, res) => {
     // user input
@@ -55,7 +55,7 @@ export const createUser = async (req, res) => {
 };
 
 //@description: login user 
-//@route : /users/signin
+//@route : /user/login
 //@access: public
 export const loginUser = async (req, res) => {
     //get user input
@@ -77,13 +77,13 @@ export const loginUser = async (req, res) => {
             return res.status(400).json({ message: "User does not exist" });
         }
         //validate password
-        const ispasswordCorrect = compareBcryptPassword(password, user.password);
+        const ispasswordCorrect = await compareBcryptPassword(password, user.password);
         if (!ispasswordCorrect) {
             return res.status(400).json({ message: "Invalid Credentials" });
         }
 
         res.status(200).json({
-            token: generateTokenFromPayload(user._id),
+            access_token: generateTokenFromPayload(user._id),
         });
     } catch (error) {
         return res.status(500).json({ message: "Something went wrong" });
