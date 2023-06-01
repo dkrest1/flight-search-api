@@ -2,7 +2,7 @@
 
 ## Description
 
-A flight search API integrated with a third party API [SkyScanner] to retrieve flight information and display search results.
+A flight search API integrated with a third party API [Amadeus] to retrieve flight information and display search results.
 
 ## Technologies Used
 
@@ -39,7 +39,7 @@ create a .env file and put in the right credentials
 ```bash
 $ cd server
 $ cp .env.sample .env
-$ npm run start
+$ npm run dev
 ```
 
 ### Contact
