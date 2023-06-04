@@ -33,6 +33,21 @@ export const flightInfoService = async (origin, destination, departureDate, retu
         returnDate,
         adults: numOfPassengers
     })
-    return result
+
+    const flightInfo = result.data.map((flight) => {
+        console.log(flight)
+        return {
+            airline: flight.validatingAirlineCodes[0],
+            flightNumber: flight.itineraries[0].segments[0].number,
+            departure: flight.itineraries[0].segments[0].departure,
+            arrival: flight.itineraries[0].segments[0].arrival,
+            duration: flight.itineraries[0].duration,
+            numberOfBookableSeats: flight.numberOfBookableSeats,
+            price: flight.price.grandTotal,
+            currency: flight.price.currency
+        }
+    })
+    
+    return flightInfo;
 }
 

@@ -32,17 +32,7 @@ export const searchFlightInfo = async (req, res) => {
 
     try {
         const result = await flightInfoService(origin, destination, depature_date, return_date, passenger_number);
-        const data = {
-            id: result.data[0].id,
-            oneWay: result.data[0].oneWay,
-            lastTicketingDate: result.data[0].lastTicketingDate,
-            numberOfBookableSeats: result.data[0].numberOfBookableSeats,
-            itineraries: result.data[0].itineraries,
-            duration: result.data[0].duration,
-            segments: result.data[0].segments,
-            price: result.data[0].price
-        }
-        return res.status(200).json(result.data);
+        return res.status(200).json(result);
     } catch (err) {
         return res.status(400).json({
             error: err.description,
