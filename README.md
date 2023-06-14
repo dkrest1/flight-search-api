@@ -42,4 +42,6 @@ $ cp .env.sample .env
 $ npm run dev
 ```
 
-### Contact
+### API documentation
+
+http://localhost:3000/api-docs/
