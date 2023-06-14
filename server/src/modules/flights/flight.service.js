@@ -2,7 +2,7 @@ import Amadeus from "amadeus"
 import winston from "winston";
 
 //logger configuration
-const logger = winston.createLogger({
+export const logger = winston.createLogger({
     level: 'info',
     format: winston.format.json(),
     defaultMeta: { service: 'flight-search-api' },
@@ -35,8 +35,8 @@ export const flightInfoService = async (origin, destination, departureDate, retu
     })
 
     const flightInfo = result.data.map((flight) => {
-        console.log(flight)
         return {
+            id: flight.id,
             airline: flight.validatingAirlineCodes[0],
             flightNumber: flight.itineraries[0].segments[0].number,
             departure: flight.itineraries[0].segments[0].departure,
@@ -47,7 +47,8 @@ export const flightInfoService = async (origin, destination, departureDate, retu
             currency: flight.price.currency
         }
     })
-    
+
+
     return flightInfo;
 }
 
