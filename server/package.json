@@ -22,6 +22,7 @@
     "joi": "^17.9.2",
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^7.2.0",
+    "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^4.6.3",
     "winston": "^3.9.0"
   },

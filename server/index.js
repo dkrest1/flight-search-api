@@ -1,8 +1,8 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import { swaggerUi } from "swagger-ui-express";
-import { swaggerDocument } from "./swagger.json"
+import swaggerUi from "swagger-ui-express";
+import swaggerJSDoc from 'swagger-jsdoc';
 import connectDb from "./src/config/db.config.js";
 import chalk from "chalk";
 import userRoute from "./src/modules/users/user.route.js";
@@ -21,11 +21,31 @@ app.use("/user", userRoute);
 app.use("/flight", flightRoute)
 
 //swagger explorer ui option
-let options = {
-    explorer: true
-}
+const options = {
+    definition: {
+        openapi: "3.0.0",
+        info: {
+            title: "Flight Search API with OpenAPI",
+            version: "1.0.0",
+            description:
+                "This is a simple Flight search API interated with Amadeus flight API where users can search for flight, filter, sort and order flight search results based on the parameters supplied.",
+        },
+        servers: [
+            {
+                url: "http://localhost:3000",
+            },
+        ],
+    },
+    apis: ["./src/modules/**/*.route.js"],
+};
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument, options));
+const specs = swaggerJSDoc(options);
+
+app.use(
+    "/api-docs",
+    swaggerUi.serve,
+    swaggerUi.setup(specs, { explorer: true })
+);
 
 app.listen(port || 3000, () => {
     console.log(chalk.blue(`app is live and running on port ${port}`))
