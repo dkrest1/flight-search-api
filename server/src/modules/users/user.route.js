@@ -3,7 +3,8 @@ import auth from "../middleware/auth.middleware.js"
 import {
     createUser,
     loginUser,
-    getMe,
+    getUser,
+    getUsers,
     updatedUser,
     deleteUser
 
@@ -11,23 +12,23 @@ import {
 
 const router = new express.Router()
 
+// ================================================================================
+//  Swagger Documentation for the User Resorce
+// =================================================================================
 
 
-//DTO (Data Model)
+// User Model or User Entity
 /**
  * @swagger
  * components:
  *   schemas:
- *     User:
+ *     UserEntity:
  *       type: object
  *       required:
- *         - usernaame
+ *         - username
  *         - email 
  *         - password
  *       properties:
- *         id:
- *           type: string
- *           description: The auto-generated id of the user
  *         username:
  *           type: string
  *           description: The username of the user
@@ -40,22 +41,44 @@ const router = new express.Router()
  *         createdAt:
  *           type: string
  *           format: date
- *           description: The date the user was registered
- *       example:
- *         id: d5fE_asz
- *         username: Oluwatosin
- *         email: oluwatosin@gmail.com
- *         createdAt: 2023-06-14T04:05:06.157Z
+ *           description: The date the user was created
+ *         updatedAt:
+ *           type: string
+ *           format: date
+ *           description: The date the user was updated
  */
 
-//required Data
 
+// DTO for create user
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     CreateUserDTO:
+ *       type: object
+ *       required:
+ *         - username
+ *         - email 
+ *         - password
+ *       properties:
+ *         username:
+ *           type: string
+ *           description: The username of the user
+ *         email:
+ *           type: string
+ *           description: The email of the user
+ *         password:
+ *           type: string
+ *           description: The password of the user
+ */
+
+// request and response for create user 
 /**
  * @swagger
  * tags:
- *   name: User
- *   description: The create user API
- * /user/create:
+ *   name: User 
+ *   description: The User resource endpoint
+ * user/create:
  *   post:
  *     summary: Create a new user
  *     tags: [User]
@@ -64,63 +87,170 @@ const router = new express.Router()
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/User'
+ *             $ref: '#/components/schemas/CreateUserDTO'
  *     responses:
  *       201:
- *         description: The created user.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/User'
+ *         description: User created successsfully.
  *       400:
- *          description: User existed
- *          content:
- *            application/json:
- *              schema:
- *                $ref: '#/components/schemas/User'
+ *          description: User existed.
+ *         
  *       500:
- *         description: Some server error
+ *         description: server error, please try again later.
  *
  */
-
 router.post("/create", createUser);
 
+// DTO for login user
 /**
  * @swagger
- * tags:
- *   name: User Login
- *   description: The Login user API
- * /user/login:
+ * components:
+ *   schemas:
+ *     LoginUserDTO:
+ *       type: object
+ *       required:
+ *         - email 
+ *         - password
+ *       properties:
+ *         email:
+ *           type: string
+ *           description: The email of the user
+ *         password:
+ *           type: string
+ *           description: The password of the user
+ */
+
+// request response for login user
+/**
+ * @swagger
+ * user/login:
  *   post:
- *     summary: Login user
+ *     summary: Login a user
  *     tags: [User]
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             $ref: '#/components/schemas/User'
+ *             $ref: '#/components/schemas/LoginUserDTO'
  *     responses:
- *       201:
- *         description: The created user.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/User'
- *       400:
- *          description: User existed
- *          content:
- *            application/json:
- *              schema:
- *                $ref: '#/components/schemas/User'
+ *       200:
+ *         description: Login successfully and get token response.
+ *       401:
+ *          description: Unauthorized.
  *       500:
- *         description: Some server error
+ *         description: Server error, please try again later.
  *
  */
 
 router.post("/login", loginUser);
-router.get("/me", auth, getMe);
+
+// request response to get user
+/**
+ * @swagger
+ * user/me:
+ *   get:
+ *     summary: get a user profile
+ *     tags: [User]
+ *     responses:
+ *       200:
+ *         description: get user profile detail.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserEntity'
+ *       401:
+ *          description: Unauthorized.
+ *       500:
+ *         description: Server error, please try again later.
+ *
+ */
+
+router.get("/me", auth, getUser);
+
+// request response to get users
+/**
+ * @swagger
+ * user:
+ *   get:
+ *     summary: get users profile
+ *     tags: [User]
+ *     responses:
+ *       200:
+ *         description: get users profile detail.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserEntity'
+ *       401:
+ *          description: Unauthorized.
+ *       500:
+ *         description: Server error, please try again later.
+ *
+ */
+
+router.get("/", auth, getUsers)
+
+// DTO for update user
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     UpdateUserDTO:
+ *       type: object
+ *       properties:
+ *         username:
+ *           type: string
+ *           description: The username of the user
+ *         email:
+ *           type: string
+ *           description: The email of the user
+ */
+
+
+// request response to update user
+/**
+ * @swagger
+ * user/me:
+ *   patch:
+ *     summary: update a user profile
+ *     tags: [User]
+ *     requestBody:
+ *       required: false
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/UpdateUserDTO'
+ *     responses:
+ *       200:
+ *         description: update a user profile detail.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/UserEntity'
+ *       401:
+ *          description: Unauthorized.
+ *       500:
+ *         description: Server error, please try again later.
+ *
+ */
 router.patch("/me", auth, updatedUser);
+
+// request response to update user
+/**
+ * @swagger
+ * user/me:
+ *   delete:
+ *     summary: delete a user profile
+ *     tags: [User]
+ *     responses:
+ *       200:
+ *         description:  user profile deleted successfully.
+ *       401:
+ *          description: Unauthorized.
+ *       500:
+ *         description: Server error, please try again later.
+ *
+ */
 router.delete("/me", auth, deleteUser);
 
 export default router

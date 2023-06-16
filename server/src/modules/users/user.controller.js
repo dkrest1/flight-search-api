@@ -1,4 +1,5 @@
 import Joi from "joi";
+import { logger } from "../../config/logger.config.js";
 import UserModal from "./model/user.model.js";;
 import {
     passwordToHash,
@@ -24,14 +25,14 @@ export const createUser = async (req, res) => {
     if (error) {
         return res
             .status(400)
-            .json({ message: error.message });
+            .json({ sucess: false, message: error.message });
     }
 
     try {
         //check if user exist
         const oldUser = await UserModal.findOne({ email });
         if (oldUser) {
-            return res.status(400).json({ message: "user already exist" });
+            return res.status(400).json({ success: false, message: "user already exist" });
         }
 
         //hashed password
@@ -43,13 +44,10 @@ export const createUser = async (req, res) => {
             email,
             password: hashedPassword,
         });
-
-        return await res.status(201).json({
-            _id: user.id,
-            username: user.username,
-            email: user.email,
-        });
+        user.password = undefined
+        return await res.status(201).json({ success: true, data: user });
     } catch (error) {
+        logger.error(error)
         return res.status(501).json({ message: "Something went wrong!" });
     }
 };
@@ -68,25 +66,26 @@ export const loginUser = async (req, res) => {
     //validate user input
     const { error } = schema.validate({ email, password });
     if (error) {
-        return res.status(400).json({ message: `${error.message}` });
+        return res.status(400).json({ success: false, message: `${error.message}` });
     }
 
     try {
         const user = await UserModal.findOne({ email });
         if (!user) {
-            return res.status(400).json({ message: "User does not exist" });
+            return res.status(400).json({ success: false, message: "User does not exist" });
         }
         //validate password
         const ispasswordCorrect = await compareBcryptPassword(password, user.password);
         if (!ispasswordCorrect) {
-            return res.status(400).json({ message: "Invalid Credentials" });
+            return res.status(400).json({ success: false, message: "Invalid Credentials" });
         }
 
         res.status(200).json({
             access_token: generateTokenFromPayload(user._id),
         });
     } catch (error) {
-        return res.status(500).json({ message: "Something went wrong" });
+        logger.error(error)
+        return res.status(500).json({ success: false, message: "Something went wrong" });
     }
 };
 
@@ -94,8 +93,31 @@ export const loginUser = async (req, res) => {
 //@description: get user profile controller
 //@route : /users/me
 //@access: private
-export const getMe = async (req, res) => {
-    return res.status(200).json(req.user)
+export const getUser = async (req, res) => {
+    const user = req.user
+    try {
+        if (!user || user === null) {
+            return res.status(400).json({ success: false, message: "user not found." })
+        }
+        return await res.status(200).json({ success: true, data: user })
+
+    } catch (error) {
+        logger.error(error)
+        return res.status(500).json({ success: false, message: "something went wrong, please try again later" })
+    }
+
+}
+
+export const getUsers = async (req, res) => {
+    try {
+        const users = await UserModal.find({}).select("-password")
+        return await res.status(200).json({ success: true, data: users })
+
+    } catch (error) {
+        logger.error(error)
+        return res.status(400).json({ success: false, message: err.message })
+    }
+
 }
 
 
@@ -105,25 +127,19 @@ export const getMe = async (req, res) => {
 export const updatedUser = async (req, res) => {
     //validate the update input
     const updates = Object.keys(req.body)
-    const allowedUpdates = ["username", "fullname", "email", "password"]
+    const allowedUpdates = ["username", "email"]
     const isValidOperation = updates.every(update => allowedUpdates.includes(update))
     if (!isValidOperation) {
-        return res.status(400).json({ message: "Invalid Updates" })
+        return res.status(400).json({ success: false, message: "Invalid Updates" })
     }
 
     try {
         const user = req.user
-        updates.forEach(update => user[update] = req.body[update])
+        updates.map(update => user[update] = req.body[update])
         await user.save()
-        return res.status(201).json({
-            _id: user.id,
-            username: user.username,
-            firstname: user.firstname,
-            lastname: user.lastname,
-            email: user.email
-        })
+        return res.status(201).json({ success: true, data: user })
     } catch (error) {
-        return res.status(400).json({ message: "Invalid Updates!" })
+        return res.status(400).json({ success: false, message: "Invalid Updates!" })
     }
 
 }
@@ -132,10 +148,10 @@ export const updatedUser = async (req, res) => {
 //@route : /users/me/delete
 //@access: private 
 export const deleteUser = async (req, res) => {
-    try {
-        await req.user.remove()
-        res.status(200).send(req.user)
-    } catch (error) {
-        res.status(400).json({ message: "User not found!" })
+    const user = req.user
+    if (!user || user === null) {
+        return res.status(400).json({ success: false, message: "user not found" })
     }
+    await UserModal.findByIdAndDelete(user._id);
+    res.status(200).send({ success: true, message: "user deleted successfully." })
 }
