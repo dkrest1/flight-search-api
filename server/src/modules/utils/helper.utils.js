@@ -22,3 +22,12 @@ export const passwordToHash = async (password) => {
 export const compareBcryptPassword = async (password, hashedPassword) => {
     return await bcrypt.compare(password, hashedPassword)
 }
+
+export const pagination = (page = 1, limit = 250) => {
+    page = parseInt(page);
+    limit = parseInt(limit);
+    const startIndex = (page - 1) * limit;
+    const lastIndex = page * limit;
+    return { startIndex, lastIndex }
+
+}
