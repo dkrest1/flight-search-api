@@ -1,10 +1,8 @@
 import express from "express"
 import auth from "../middleware/auth.middleware.js";
-import { searchFlightInfo, filterAndSortFlightResult } from "./flight.controller.js"
+import { searchFlightInfo } from "./flight.controller.js"
 
 const router = new express.Router();
 
-router.post("/", searchFlightInfo);
-router.get("/search", filterAndSortFlightResult)
-
+router.post("/search", searchFlightInfo);
 export default router
