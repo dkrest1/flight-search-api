@@ -11,9 +11,13 @@ function Navbar() {
                     <h6>Travel</h6>
                 </NavLink>
                 <nav className='flex flex-row gap-5 text-white font-medium'>
-                    <NavLink to ='/flights'>Flights</NavLink>
-                    <NavLink to ='/bookings'>Bookings</NavLink>
-                    <NavLink to ='/contact'>Contact Us</NavLink>
+                    <NavLink to ='/flights' end className={({ isActive, isPending }) =>isPending ? "pendinglink" : isActive ? "activelink" : "pendinglink"}>Flights</NavLink>
+                    <NavLink to ='/bookings' end
+                        className={({ isActive, isPending }) =>isPending ? "pendinglink hover:text-lg" : isActive ? "activelink" : " pendinglink"}
+                    >Bookings</NavLink>
+                    <NavLink to ='/contact' end
+                        className={({ isActive, isPending }) =>isPending ? "pendinglink" : isActive ? "activelink" : "pendinglink"}
+                    >Contact Us</NavLink>
                 </nav>
             </div>
         </nav>

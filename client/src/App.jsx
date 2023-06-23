@@ -4,7 +4,7 @@ import Navbar from './Navbar';
 import Flights from './Components/Flights'
 import Bookings from './Components/Bookings'
 import Contact from './Components/Contact'
-// import heroImg from '../../public/Assets/hero-image.jpg'
+
 function App() {
   return (
    <div className='flex flex-col bg-hero-img h-screen bg-cover bg-no-repeat'>
