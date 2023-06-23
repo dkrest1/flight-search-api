@@ -1,3 +1,23 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@layer utilities{
+    .activelink{
+        @apply relative font-bold
+    }
+    .pendinglink{
+        @apply relative
+    }
+    .activelink::after{
+        @apply content-[''] bg-slate-50 h-[3px] w-[50%] left-0 bottom-[-2px] rounded-lg absolute duration-300
+    }
+    .activelink:hover::after{
+        @apply w-[100%]
+    }
+    .pendinglink::after{
+        @apply content-[''] bg-slate-50 h-[3px] w-[0%] left-0 bottom-[-2px] rounded-lg absolute duration-300
+    }
+    .pendinglink:hover::after{
+        @apply w-[100%]
+    }
+}
