@@ -35,3 +35,14 @@ export const flightInfoService = async (origin, destination, departureDate, retu
     return flightInfo;
 }
 
+//book flight service
+export const bookFlightService = async () => {
+    amadeus.booking.flightOrders.post(
+        JSON.stringify({
+            'type': 'flight-order',
+            'flightOffers': [priced - offers],
+            'travelers': []
+        })
+    )
+
+}

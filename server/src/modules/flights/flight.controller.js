@@ -27,6 +27,29 @@ export const searchFlightInfo = async (req, res) => {
     }
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /**
  * ===================================================================================================================================
  *  Code Commented out cause this can be implemented from the frontend
