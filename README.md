@@ -8,9 +8,15 @@ A flight search API integrated with a third party API [Amadeus] to retrieve flig
 
 - Frontend: React, TailwindCSS
 - Backend: NodeJS, Express
-- Third Party API: SkyScanner API
+- Third Party API: Amadeus API
 - Mongoose With MongoDB
 - Environment-based Configuration
+
+## Design
+
+You can view the design and wireframes of the project on Figma:
+
+- [Click here to view](https://www.figma.com/file/FSC6oEZ85iWekoCO5weufS/Flight-Website?node-id=0%3A1&mode=dev "Flight Search")
 
 ## Prequesites
 
