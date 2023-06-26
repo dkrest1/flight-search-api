@@ -1,8 +1,7 @@
 import { flightSearcService, flightComfirmationService, flightBookingService } from "./flight.service.js";
 import { logger } from "../../config/logger.config.js";
-import { pagination } from "../utils/helper.utils.js";
 import Joi from "joi";
-import axios from "axios";
+import BookingModel from "./model/flight.model.js"
 
 
 //@description: search flight info 
@@ -50,7 +49,22 @@ export const comfirmFlightController = async (req, res) => {
     const { origin, destination, departure_date, adults } = req.body
     try {
         const result = await flightComfirmationService(origin, destination, departure_date, adults, flightId);
-        return res.status(200).json({ success: true, data: result })
+
+        const flightBookingComfirmation = result.flightOffers.map((flight) => {
+            return {
+                id: flight.id,
+                airline: flight.validatingAirlineCodes[0],
+                flightNumber: flight.itineraries[0].segments[0].number,
+                departure: flight.itineraries[0].segments[0].departure,
+                arrival: flight.itineraries[0].segments[0].arrival,
+                duration: flight.itineraries[0].duration,
+                numberOfBookableSeats: flight.numberOfBookableSeats,
+                price: flight.price.grandTotal,
+                currency: flight.price.currency
+            }
+
+        })
+        return res.status(200).json({ success: true, data: flightBookingComfirmation })
     } catch (err) {
         console.log(err)
         return res.status(400).json({
@@ -65,6 +79,7 @@ export const comfirmFlightController = async (req, res) => {
 
 export const bookFlightController = async (req, res) => {
     const id = req.params.id;
+    const user = req.user
     const { origin, destination, departure_date, adults, travelerId, dateOfBirth, firstName, lastName, gender, email, countryCode, phone } = req.body
 
     const schema = Joi.object().keys({
@@ -117,8 +132,57 @@ export const bookFlightController = async (req, res) => {
     travellers.push(contact)
 
     try {
-        const result = await flightBookingService(origin, destination, departure_date, adults, id, travellers)
-        return res.status(200).json({ data: result })
+        const result = await flightBookingService(origin, destination, departure_date, adults, id, travellers);
+
+        const flight = result.flightOffers.map((flight) => {
+            return {
+                id: flight.id,
+                airline: flight.validatingAirlineCodes[0],
+                flightNumber: flight.itineraries[0].segments[0].number,
+                departure: flight.itineraries[0].segments[0].departure,
+                arrival: flight.itineraries[0].segments[0].arrival,
+                duration: flight.itineraries[0].duration,
+                numberOfBookableSeats: flight.numberOfBookableSeats,
+                price: flight.price.grandTotal,
+                currency: flight.price.currency
+            }
+
+        })
+
+        const flightBookingReceipt = {
+            contact: {
+                fullname: `${firstName} ${lastName}`,
+                travelerId,
+                gender,
+                email,
+                phone: `${countryCode}${phone}`
+            },
+            bookingId: result.id,
+            queuingOfficeId: result.queuingOfficeId,
+            reference: result.associatedRecords[0].reference,
+            creationDate: result.associatedRecords[0].originSystemCode,
+            flightOfeers: flight,
+
+        }
+
+        const existingBooking = await BookingModel.findOne({
+            "bookId": result.id
+        });
+
+        if (existingBooking) {
+            return res.status(400).json({ success: false, message: "booking existed" })
+        }
+
+        await BookingModel.create({
+            fullname: `${firstName} ${lastName}`,
+            email,
+            bookId: result.id,
+            queueOfficeId: result.queuingOfficeId,
+            reference: result.associatedRecords[0].reference,
+            user: user._id
+        })
+
+        return res.status(200).json({ data: flightBookingReceipt })
     } catch (err) {
         console.log(err)
         return res.status(400).json({
@@ -131,11 +195,25 @@ export const bookFlightController = async (req, res) => {
 
 }
 
+export const getBookingsController = async (req, res) => {
+    const user = req.user
+
+    try {
+        const bookings = await BookingModel.find({ user: user._id }).exec()
+        return res.status(200).json({ success: true, data: bookings })
+    } catch (err) {
+        return res.status(500).json({ success: false, message: "something went wrong, try again" })
+    }
+
+
+
+}
+
 
 
 /**
  * ===================================================================================================================================
- *  Code Commented out cause this can be implemented from the frontend
+ *  Code Commented out cause this can be implemented from the frontend, Left here cause it might be useful later
  * ===================================================================================================================================
  */
 // //@description: filter flight info 
