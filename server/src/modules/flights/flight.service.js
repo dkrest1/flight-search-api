@@ -1,5 +1,6 @@
 import Amadeus from "amadeus"
 import { logger } from "../../config/logger.config.js"
+import { formatDuration, formatDateTime } from "../utils/helper.utils.js";
 
 // amadeus config
 const amadeus = new Amadeus({
@@ -31,7 +32,7 @@ export const flightSearcService = async (origin, destination, departureDate, adu
             flightNumber: flight.itineraries[0].segments[0].number,
             departure: flight.itineraries[0].segments[0].departure,
             arrival: flight.itineraries[0].segments[0].arrival,
-            duration: flight.itineraries[0].duration,
+            duration: formatDuration(flight.itineraries[0].duration),
             numberOfBookableSeats: flight.numberOfBookableSeats,
             price: flight.price.grandTotal,
             currency: flight.price.currency

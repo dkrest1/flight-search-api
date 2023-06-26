@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken"
 import bcrypt from "bcryptjs"
+import { parseISO, format } from "date-fns"
 
 export const generateTokenFromPayload = (payload) => {
     const salt = process.env.JWT_SECRET
@@ -32,3 +33,18 @@ export const pagination = (page = 1, limit = 250) => {
     return { startIndex, lastIndex }
 
 }
+
+//fault time
+export const formatDuration = (duration) => {
+    const hours = parseInt(duration.substring(2, duration.indexOf("H")), 10);
+    const minutes = parseInt(duration.substring(duration.indexOf("H") + 1, duration.indexOf("M")), 10);
+    const time = `${hours} hours ${minutes} minutes`
+    return time
+}
+
+export const formatDateTime = (dateTime) => {
+    const dateObj = parseISO(dateTime)
+    return format(dateObj, "dd-MM-yyyy HH:mm:ss")
+}
+
+// console.log(formatDateTime("2023-07-01T06:25:00"));
