@@ -19,9 +19,11 @@
     "date-fns": "^2.30.0",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
+    "express-rate-limit": "^6.7.0",
     "joi": "^17.9.2",
     "jsonwebtoken": "^9.0.0",
     "mongoose": "^7.2.0",
+    "redis": "^4.6.7",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^4.6.3",
     "winston": "^3.9.0"

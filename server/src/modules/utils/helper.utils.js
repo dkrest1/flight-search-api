@@ -23,6 +23,7 @@ export const compareBcryptPassword = async (password, hashedPassword) => {
     return await bcrypt.compare(password, hashedPassword)
 }
 
+//manual pagination
 export const pagination = (page = 1, limit = 250) => {
     page = parseInt(page);
     limit = parseInt(limit);
