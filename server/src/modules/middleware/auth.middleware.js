@@ -19,12 +19,12 @@ const auth = async (req, res, next) => {
             next()
 
         } catch (error) {
-            return res.status(401).json({ message: "Not Authorized" })
+            return res.status(401).json({ success: false, message: "Not Authorized" })
         }
     }
 
     if (!token) {
-        return res.status(401).json({ message: "Unauthorized" })
+        return res.status(401).json({ success: false, message: "Unauthorized" })
     }
 }
 
