@@ -1,23 +1,41 @@
-import { flightInfoService } from "./flight.service.js";
+import { flightSearcService, flightComfirmationService, flightBookingService } from "./flight.service.js";
 import { logger } from "../../config/logger.config.js";
 import { pagination } from "../utils/helper.utils.js";
+import Joi from "joi";
+import axios from "axios";
 
 
 //@description: search flight info 
 //@route : /flight/search
 //@access: public
-export const searchFlightInfo = async (req, res) => {
+export const searchFlightController = async (req, res) => {
     //get request body
-    const { origin, destination, departure_date, return_date, passenger_number } = req.body
-    //to manually set pagination
-    const { startIndex, lastIndex } = pagination(req.query.page, req.query.limit);
+    const { origin, destination, departure_date, adults } = req.body
+    //parameter validation
+    const schema = Joi.object().keys({
+        origin: Joi.string().required(),
+        destination: Joi.string().required(),
+        departure_date: Joi.string().required(),
+        adults: Joi.string().required()
+    });
+
+    // validate flight input
+    const { error } = schema.validate({ origin, destination, departure_date, adults });
+
+    if (error) {
+        return res
+            .status(400)
+            .json({ sucess: false, message: error.message });
+    }
+
     try {
-        const result = await flightInfoService(origin, destination, departure_date, return_date, passenger_number);
-        // Get the paginated result
-        const paginatedResult = result.slice(startIndex, lastIndex);
-        return res.status(201).json({ success: true, data: paginatedResult });
+        const result = await flightSearcService(origin, destination, departure_date, adults);
+
+        return res.status(201).json({ success: true, data: result });
+
     } catch (err) {
         logger.error(err)
+        console.log(err)
         return res.status(400).json({
             success: false,
             status: err.code,
@@ -27,26 +45,91 @@ export const searchFlightInfo = async (req, res) => {
     }
 }
 
+export const comfirmFlightController = async (req, res) => {
+    const flightId = req.params.id
+    const { origin, destination, departure_date, adults } = req.body
+    try {
+        const result = await flightComfirmationService(origin, destination, departure_date, adults, flightId);
+        return res.status(200).json({ success: true, data: result })
+    } catch (err) {
+        console.log(err)
+        return res.status(400).json({
+            success: false,
+            status: err.code,
+            message: err.description,
 
+        });
+    }
 
+}
 
+export const bookFlightController = async (req, res) => {
+    const id = req.params.id;
+    const { origin, destination, departure_date, adults, travelerId, dateOfBirth, firstName, lastName, gender, email, countryCode, phone } = req.body
 
+    const schema = Joi.object().keys({
+        origin: Joi.string().required(),
+        destination: Joi.string().required(),
+        departure_date: Joi.string().required(),
+        adults: Joi.string().required(),
+        travelerId: Joi.string().required(),
+        dateOfBirth: Joi.string().required(),
+        origin: Joi.string().required(),
+        destination: Joi.string().required(),
+        departure_date: Joi.string().required(),
+        adults: Joi.string().required(),
+        firstName: Joi.string().required(),
+        lastName: Joi.string().required(),
+        gender: Joi.string().required(),
+        email: Joi.string().required(),
+        countryCode: Joi.string().required(),
+        phone: Joi.string().required(),
+    });
 
+    // validate flight input
+    const { error } = schema.validate({ origin, destination, departure_date, adults, travelerId, dateOfBirth, origin, destination, departure_date, adults, firstName, lastName, gender, email, countryCode, phone });
 
+    if (error) {
+        return res
+            .status(400)
+            .json({ sucess: false, message: error.message });
+    }
 
+    const travellers = []
+    const contact = {
+        "id": travelerId,
+        "dateOfBirth": dateOfBirth,
+        "name": {
+            "firstName": firstName,
+            "lastName": lastName
+        },
+        gender,
+        "contact": {
+            "emailAddress": email,
+            "phones": [{
+                "deviceType": "MOBILE",
+                "countryCallingCode": countryCode,
+                "number": phone
+            }]
+        },
+    }
 
+    travellers.push(contact)
 
+    try {
+        const result = await flightBookingService(origin, destination, departure_date, adults, id, travellers)
+        return res.status(200).json({ data: result })
+    } catch (err) {
+        console.log(err)
+        return res.status(400).json({
+            success: false,
+            status: err.code,
+            message: err.description,
 
+        });
+    }
 
-
-
-
-
-
-
-
-
-
+}
 
 
 

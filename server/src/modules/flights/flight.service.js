@@ -1,23 +1,30 @@
 import Amadeus from "amadeus"
 import { logger } from "../../config/logger.config.js"
 
+// amadeus config
 const amadeus = new Amadeus({
     clientId: process.env.AMADEUS_API_KEY,
     clientSecret: process.env.AMADEUS_SECRET_KEY,
     logger
 });
 
-//search flight info
-export const flightInfoService = async (origin, destination, departureDate, returnDate, numOfPassengers) => {
-    const result = await amadeus.shopping.flightOffersSearch.get({
+//flight offer
+const flightOffers = async (origin, destination, departureDate, adults) => {
+    const flights = await amadeus.shopping.flightOffersSearch.get({
         originLocationCode: origin,
         destinationLocationCode: destination,
         departureDate,
-        returnDate,
-        adults: numOfPassengers
+        adults,
+        max: '10' // this is hardcoded, you can always make it dynamic, default = 10
     })
 
-    const flightInfo = result.data.map((flight) => {
+    return flights
+}
+
+//search flight offers
+export const flightSearcService = async (origin, destination, departureDate, adults) => {
+    const flights = await flightOffers(origin, destination, departureDate, adults);
+    return flights.data.map((flight) => {
         return {
             id: flight.id,
             airline: flight.validatingAirlineCodes[0],
@@ -30,19 +37,41 @@ export const flightInfoService = async (origin, destination, departureDate, retu
             currency: flight.price.currency
         }
     })
-
-
-    return flightInfo;
 }
 
-//book flight service
-export const bookFlightService = async () => {
-    amadeus.booking.flightOrders.post(
+export const flightComfirmationService = async (origin, destination, departureDate, adults, id) => {
+    const flights = await flightOffers(origin, destination, departureDate, adults)
+
+    const flightPriceComfirmation = await amadeus.shopping.flightOffers.pricing.post(
         JSON.stringify({
-            'type': 'flight-order',
-            'flightOffers': [priced - offers],
-            'travelers': []
+            "data": {
+                "type": "flight-offers-pricing",
+                "flightOffers": [
+                    flights.data[id]
+                ]
+            }
         })
     )
-
+    return flightPriceComfirmation.data
 }
+
+export const flightBookingService = async (origin, destination, departureDate, adults, id, contactDetails) => {
+    const pricing = await flightComfirmationService(origin, destination, departureDate, adults, id)
+
+    const flightBooking = await amadeus.booking.flightOrders.post(
+        JSON.stringify({
+            'data': {
+                'type': 'flight-order',
+                'flightOffers': [pricing.flightOffers[0]],
+                'travelers': [
+                    ...contactDetails
+                ]
+            }
+        })
+
+    );
+
+    return flightBooking.data;
+}
+
+
