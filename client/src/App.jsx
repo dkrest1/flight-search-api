@@ -4,6 +4,7 @@ import Navbar from './Navbar';
 import Flights from './Components/Flights'
 import Bookings from './Components/Bookings'
 import Contact from './Components/Contact'
+import Details from './Components/Details';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route exact path='/flights' element={<Flights/>}/>
         <Route exact path='/bookings' element={<Bookings/>}/>
         <Route exact path='/contact' element={<Contact/>}/>
+        <Route exact path='/details' element={<Details/>}/>
       </Routes>
     </BrowserRouter>
    </div>
