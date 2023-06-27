@@ -35,21 +35,21 @@ const Details = () => {
                 </div>
             </div>
             <div className='w-full'>
-                <div className='w-full flex flex-col rounded border'>
-                    <h5 className='text-sm font-semibold border-b'>Fee Summary</h5>
-                    <div className='flex flex-row justify-between border-b'>
+                <div className='w-full flex flex-col rounded border '>
+                    <h5 className='text-sm font-semibold border-b py-1'>Fee Summary</h5>
+                    <div className='flex flex-row justify-between border-b py-1'>
                         <p>Fare</p>
                         <p>$1500</p>
                     </div>
-                    <div className='flex flex-row justify-between border-b'>
+                    <div className='flex flex-row justify-between border-b py-1'>
                         <p>Tax</p>
                         <p>$200</p>
                     </div>
-                    <div className='flex flex-row justify-between border-b'>
+                    <div className='flex flex-row justify-between border-b py-1'>
                         <p>Other charges</p>
                         <p>$80</p>
                     </div>
-                    <div className='flex flex-row justify-between border-b'>
+                    <div className='flex flex-row justify-between py-1'>
                         <p>Total Fare</p>
                         <p>$1500 * 2</p>
                     </div>
