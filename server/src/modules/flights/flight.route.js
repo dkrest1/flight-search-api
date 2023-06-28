@@ -8,4 +8,5 @@ router.post("/search", searchFlightController);
 router.post("/comfirm/:id", auth, comfirmFlightController);
 router.post("/book/:id", auth, bookFlightController);
 router.get("/bookings", auth, getBookingsController);
-export default router
+
+export default router;
