@@ -5,6 +5,8 @@ import Flights from './Components/Flights'
 import Bookings from './Components/Bookings'
 import Contact from './Components/Contact'
 import Details from './Components/Details';
+import Login from './Components/Login';
+import Signup from './Components/Signup';
 
 function App() {
   return (
@@ -17,6 +19,8 @@ function App() {
         <Route exact path='/bookings' element={<Bookings/>}/>
         <Route exact path='/contact' element={<Contact/>}/>
         <Route exact path='/details' element={<Details/>}/>
+        <Route exact path='/login' element={<Login/>}/>
+        <Route exact path='/signup' element={<Signup/>}/>
       </Routes>
     </BrowserRouter>
    </div>
