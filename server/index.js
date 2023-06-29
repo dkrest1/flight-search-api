@@ -7,7 +7,7 @@ import connectDb from "./src/config/db.config.js";
 import chalk from "chalk";
 import userRoute from "./src/modules/users/user.route.js";
 import flightRoute from "./src/modules/flights/flight.route.js";
-import { client } from "./src/config/redis.config.js"
+import { redisClient } from "./src/config/redis.config.js"
 
 
 
@@ -53,11 +53,40 @@ app.use(
 );
 
 
-
-
-app.listen(port || 3000, () => {
+app.listen(port || 3000, async () => {
     console.log(chalk.blue(`app is live and running on port ${port}`))
+    await redisClient.connect();
 })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
