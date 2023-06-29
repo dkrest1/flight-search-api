@@ -2,6 +2,7 @@ import { flightSearcService, flightComfirmationService, flightBookingService } f
 import { logger } from "../../config/logger.config.js";
 import Joi from "joi";
 import BookingModel from "./model/flight.model.js"
+import { redisClient } from "../../config/redis.config.js";
 
 
 //@description: search flight info 
@@ -28,30 +29,10 @@ export const searchFlightController = async (req, res) => {
     }
 
     try {
+
+        const flightData = await flightSearcService(origin, destination, departure_date, adults);
+        return res.status(201).json({ success: true, data: flightData });
         //implementing redis caching
-        await redisClient.hGetAll("flightHash", async (err, flightData) => {
-
-            if (err) {
-                return res.status(400).json({ success: false, message: err.message })
-            }
-
-            if (flightData) {
-
-                return res.status(200).json({ success: true, data: JSON.parse(flightData) });
-
-            }
-
-            flightData = await flightSearcService(origin, destination, departure_date, adults);
-
-            await redisClient.HSET("flightHash", {
-                orign: JSON.stringify(origin),
-                destination: JSON.stringify(destination),
-                departure_date: JSON.stringify(departure_date),
-                adults: JSON.stringify(adults)
-            }, flightData);
-
-            return res.status(201).json({ success: true, data: flightData });
-        })
 
     } catch (err) {
         logger.error(err)
