@@ -168,10 +168,10 @@ function Flights() {
         </div>
       </div>
       {/* Pagination */}
-      <div className='flex flex-row mt-6 gap-3'>
-        <button className='bg-gray-300 px-2 rounded'>PREV</button>
+      <div className='flex flex-row mt-6 gap-3 font-medium'>
+        <button className='bg-gray-300 px-3 py-1 rounded hover:bg-blue-950 hover:text-white'>PREV</button>
         <p>1</p>
-        <button className='border-2 rounded px-2 border-gray-300 text-sm'>NEXT</button>
+        <button className='border-2 rounded px-3 py-1 border-gray-300 text-sm hover:border-none hover:bg-blue-950 hover:text-white'>NEXT</button>
       </div>
     </div>
   )
