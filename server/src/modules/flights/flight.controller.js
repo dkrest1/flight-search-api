@@ -29,11 +29,8 @@ export const searchFlightController = async (req, res) => {
     }
 
     try {
-
-        const flightData = await flightSearcService(origin, destination, departure_date, adults);
-        return res.status(201).json({ success: true, data: flightData });
-        //implementing redis caching
-
+        const newFlightData = await flightSearcService(origin, destination, departure_date, adults);
+        return res.status(201).json({ success: true, data: newFlightData });
     } catch (err) {
         logger.error(err)
         console.log(err)

@@ -1,6 +1,7 @@
 import Amadeus from "amadeus"
 import { logger } from "../../config/logger.config.js"
-import { formatDuration, formatDateTime } from "../utils/helper.utils.js";
+import { formatDuration } from "../utils/helper.utils.js";
+import { redisClient } from "../../config/redis.config.js";
 
 // amadeus config
 const amadeus = new Amadeus({
@@ -11,16 +12,25 @@ const amadeus = new Amadeus({
 
 //flight offer
 const flightOffers = async (origin, destination, departureDate, adults) => {
-    const flights = await amadeus.shopping.flightOffersSearch.get({
-        originLocationCode: origin,
-        destinationLocationCode: destination,
-        departureDate,
-        adults,
-        max: '10' // this is hardcoded, you can always make it dynamic, default = 10
-    })
+    //implementing catching
+    const flights = await redisClient.hGet('flight', `${origin}-${destination}-${departureDate}-${adults}`)
+    if (flights) {
+        return JSON.parse(flights)
+    } else {
+        const newFlights = await amadeus.shopping.flightOffersSearch.get({
+            originLocationCode: origin,
+            destinationLocationCode: destination,
+            departureDate,
+            adults,
+            max: '10' // this is hardcoded, you can always make it dynamic, default = 10
+        })
+        await redisClient.hSet('flight', `${origin}-${destination}-${departureDate}-${adults}`, JSON.stringify(newFlights))
+        return newFlights
+    }
 
-    return flights
 }
+
+
 
 //search flight offers
 export const flightSearcService = async (origin, destination, departureDate, adults) => {
@@ -43,36 +53,49 @@ export const flightSearcService = async (origin, destination, departureDate, adu
 export const flightComfirmationService = async (origin, destination, departureDate, adults, id) => {
     const flights = await flightOffers(origin, destination, departureDate, adults)
 
-    const flightPriceComfirmation = await amadeus.shopping.flightOffers.pricing.post(
-        JSON.stringify({
-            "data": {
-                "type": "flight-offers-pricing",
-                "flightOffers": [
-                    flights.data[id]
-                ]
-            }
-        })
-    )
-    return flightPriceComfirmation.data
+    const flightPriceComfirmation = await redisClient.get('price')
+    if (flightPriceComfirmation) {
+        return JSON.parse(flightPriceComfirmation)
+    } else {
+        const newFlightPriceComfirmation = await amadeus.shopping.flightOffers.pricing.post(
+            JSON.stringify({
+                "data": {
+                    "type": "flight-offers-pricing",
+                    "flightOffers": [
+                        flights.data[id]
+                    ]
+                }
+            })
+        )
+        await redisClient.set('price', JSON.stringify(newFlightPriceComfirmation.data))
+        return newFlightPriceComfirmation.data
+    }
 }
 
 export const flightBookingService = async (origin, destination, departureDate, adults, id, contactDetails) => {
     const pricing = await flightComfirmationService(origin, destination, departureDate, adults, id)
 
-    const flightBooking = await amadeus.booking.flightOrders.post(
-        JSON.stringify({
-            'data': {
-                'type': 'flight-order',
-                'flightOffers': [pricing.flightOffers[0]],
-                'travelers': [
-                    ...contactDetails
-                ]
-            }
-        })
+    // implementing redis for caching
+    const booking = await redisClient.get('booking')
+    if (booking) {
+        return JSON.parse(booking)
+    } else {
+        const flightBooking = await amadeus.booking.flightOrders.post(
+            JSON.stringify({
+                'data': {
+                    'type': 'flight-order',
+                    'flightOffers': [pricing.flightOffers[0]],
+                    'travelers': [
+                        ...contactDetails
+                    ]
+                }
+            })
 
-    );
+        );
 
-    return flightBooking.data;
+        await redisClient.set('booking', JSON.stringify(flightBooking.data))
+        return flightBooking.data
+    }
 }
 
 
