@@ -53,7 +53,7 @@ export const flightSearcService = async (origin, destination, departureDate, adu
 export const flightComfirmationService = async (origin, destination, departureDate, adults, id) => {
     const flights = await flightOffers(origin, destination, departureDate, adults)
 
-    const flightPriceComfirmation = await redisClient.get('price')
+    const flightPriceComfirmation = await redisClient.hGet('price', `${origin}-${destination}-${departureDate}-${adults}`)
     if (flightPriceComfirmation) {
         return JSON.parse(flightPriceComfirmation)
     } else {
@@ -67,7 +67,7 @@ export const flightComfirmationService = async (origin, destination, departureDa
                 }
             })
         )
-        await redisClient.set('price', JSON.stringify(newFlightPriceComfirmation.data))
+        await redisClient.hSet('price', `${origin}-${destination}-${departureDate}-${adults}`, JSON.stringify(newFlightPriceComfirmation.data))
         return newFlightPriceComfirmation.data
     }
 }
@@ -76,7 +76,7 @@ export const flightBookingService = async (origin, destination, departureDate, a
     const pricing = await flightComfirmationService(origin, destination, departureDate, adults, id)
 
     // implementing redis for caching
-    const booking = await redisClient.get('booking')
+    const booking = await redisClient.hGet('booking', `${origin}-${destination}-${departureDate}-${adults}`)
     if (booking) {
         return JSON.parse(booking)
     } else {
@@ -93,7 +93,7 @@ export const flightBookingService = async (origin, destination, departureDate, a
 
         );
 
-        await redisClient.set('booking', JSON.stringify(flightBooking.data))
+        await redisClient.hSet('booking', `${origin}-${destination}-${departureDate}-${adults}`, JSON.stringify(flightBooking.data))
         return flightBooking.data
     }
 }
