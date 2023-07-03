@@ -4,9 +4,9 @@ import { Link } from 'react-router-dom'
 
 const Login = () => {
   return (
-    <div className='h-full w-full flex flex-col justify-center items-center'>
-        <div className='flex flex-col items-center bg-white w-[28%] px-8 pt-10 pb-5 rounded-md'>
-            <h3 className='font-medium '>Welcome back</h3>
+    <div className=' h-full w-full flex flex-col items-center md:h-full bg-white md:justify-center md:items-center'>
+        <div className='h-[100%] md:h-fit flex flex-col items-center bg-white w-full md:w-[28%] px-8 pt-10 pb-5 rounded-md'>
+            <h3 className='font-medium text-lg'>Welcome back!</h3>
             <p className='text-[10px] text-slate-500'>Login your account to continue</p>
             <form className='w-full'>
                 <div className='flex flex-col mt-2'>

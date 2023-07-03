@@ -1,7 +1,10 @@
 import React from 'react'
+import Navbar from '../Navbar'
 
 const Home = () => {
   return (
+    <>
+    <Navbar/>
     <div className='flex flex-col w-full justify-center h-full px-8'>
       <div className='flex flex-col text-white font-bold font-sans text-8xl tracking-wider gap-2'>
         <h1>Ready To</h1>
@@ -16,6 +19,7 @@ const Home = () => {
         </button>
       </div>
     </div>
+    </>
   )
 }
 

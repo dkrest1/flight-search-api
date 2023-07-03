@@ -1,6 +1,6 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
-import logo from '../public/Assets/flight-logo.png'
+import logo from './Assets/flight-logo.png'
 function Navbar() {
   return (
         <nav className='flex flex-row w-full py-4 px-10'>

@@ -3,10 +3,10 @@ import { Link } from 'react-router-dom'
 
 const Signup = () => {
   return (
-    <div className='h-full w-full flex flex-col justify-center items-center'>
-        <div className='flex flex-col items-center bg-white w-[28%] px-8 pt-10 pb-5 rounded-md'>
-            <h3 className='font-medium '>Create an account</h3>
-            <p className='text-[10px] text-slate-500'>Enter your details to create your account</p>
+    <div className='h-full w-full bg-white flex flex-col md:justify-center items-center'>
+        <div className='flex flex-col items-center bg-white md:w-[28%] px-8 pt-10 pb-5 rounded-md'>
+            <h3 className='font-medium text-lg'>Create an account</h3>
+            <p className='text-xs text-slate-500'>Enter your details to create your account</p>
             <form>
                 <div className='grid grid-cols-2 gap-x-6 mt-5'>
                     <label htmlFor='first-name' className='text-xs text-slate-400'>First Name</label>
