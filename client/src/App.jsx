@@ -11,19 +11,17 @@ import Signup from './Components/Auth/Signup';
 import { useEffect } from 'react';
 
 function App() {
-  // const location = useLocation();
-  const hiddenNavbarRoutes = ['/login', '/signup']
-  const hideNavbar = hiddenNavbarRoutes.includes()
+  // // const location = useLocation();
 
-  // const useScrollToTop = () => {
-    useEffect(() => {
-      window.scrollTo({ top: 0 });
-      // scroll to the top of the browser window when changing route
-      // the window object is a normal DOM object and is safe to use in React.
-    }, [location]);
-  // };
+  // // const useScrollToTop = () => {
+  //   useEffect(() => {
+  //     window.scrollTo({ top: 0 });
+  //     // scroll to the top of the browser window when changing route
+  //     // the window object is a normal DOM object and is safe to use in React.
+  //   }, [location]);
+  // // };
   return (
-   <div className='flex flex-col bg-hero-img h-screen bg-cover bg-no-repeat'>
+   <div className='h-screen flex flex-col bg-hero-img bg-cover bg-no-repeat'>
     <BrowserRouter>
       <Routes>
         <Route exact path='/' element={<Home/>}/>
