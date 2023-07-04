@@ -8,6 +8,7 @@ import { useState } from 'react'
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from 'react-slick'
+import Footer from './Footer'
 
 
 const Home = () => {
@@ -18,8 +19,8 @@ const Home = () => {
     label: `${item.city} - ${item.code} `,
   }))
   const settings = {
-    dots: true,
-    infinite:true,
+    dots: false,
+    infinite:false,
     speed: 500,
     slideToShow:1,
     SlideToScroll: 1,
@@ -28,7 +29,7 @@ const Home = () => {
   return (
     <>
     <Navbar/>
-    <div className='hidden sm:flex flex-col w-full h-full justify-center px-8'>
+    <div className='hidden sm:flex flex-col bg-hero-img bg-cover w-full h-full justify-center px-8'>
       <div className='hidden sm:flex flex-col text-white font-bold font-sans text-8xl tracking-wider gap-2'>
         <h1>Ready To</h1>
         <h1>Takeoff?</h1>
@@ -78,46 +79,52 @@ const Home = () => {
             <button className='text-white bg-blue-950 font-medium text-lg rounded tracking-wider mt-3 py-2'>Search</button>
         </form>
       </div>
-      <div className='mt-5 font-semibold text-lg '>
+      <div className='mt-7 font-semibold text-lg '>
         <h2>Top Deals</h2>
-        <div className='w-full flex flex-col border2'>
-          <Slider {...settings} className='w-[90%] h-40'>
-            <div className='w-full h-40 p-1 flex flex-row justify-center items-center bg-hero-img bg-cover'>
-              <div className='flex flex-col'>
-                <h1 className='text-white'>Lagos - London</h1>
-                <p className='text-white'>29 July -  30 August </p>
+        <div className='w-full flex flex-col h-44 mt-2'>
+          <Slider {...settings} className='w-[95%] h-full'>
+            <div className='flex flex-col h-44 bg-hero-img  bg-cover p-2 '>
+              <div className='flex flex-col  justify-between h-full'>
+                <div>
+                <h1 className='text-white font-normal'>Lagos - London</h1>
+                <p className='text-white font-thin text-sm'>29 July -  30 August </p>
+                </div>
+                <div className='flex flex-row justify-end py-2 px-2'>
+                  <button className='bg-blue-950 text-base text-white rounded py-1 px-3'>Pay $1100</button>
+                </div>
               </div>
-              <div className=''>
-                <button className='bg-blue-950 text-white rounded py-1 px-3'>Pay $1100</button>
-              </div>
+              
             </div>
-            <div className='w-full h-40 p-1 border-2 flex flex-col justify-center items-center bg-hero-img bg-cover'>
-              <div>
-                <h1 className='text-white'>Lagos - London</h1>
-                <p className='text-white'>19 June -  100 July </p>
-              </div>
-              <div>
-                <button className='bg-blue-950 text-white rounded py-1 px-3'>Pay $1100</button>
+            <div className='flex flex-col h-44 bg-hero-img  bg-cover p-2 '>
+              <div className='flex flex-col  justify-between h-full'>
+                <div>
+                <h1 className='text-white font-normal'>Lagos - Dubai</h1>
+                <p className='text-white font-thin text-sm'>19 June - 10 September </p>
+                </div>
+                <div className='flex flex-row justify-end py-2 px-2'>
+                  <button className='bg-blue-950 text-base text-white rounded py-1 px-3'>Pay $1100</button>
+                </div>
               </div>
             </div>
           </Slider>
         </div>
       </div>
-      <div className='flex flex-col items-center mt-12'>
+      <div className='flex flex-col items-center mt-14'>
         <h3 className='font-semibold text-lg '>Get exlusive deals & travel updates</h3>
         <p className='text-xs text-slate-400'>Enter your email and subscribe!!</p>
       </div>
-      <form>
-        <div className='flex flex-row'>
+      <form className='mt-8 w-full px-2 mb-14' >
+        <div className='flex flex-row w-full'>
           <input
-            className=' border rounded-sm'
+            className='w-full py-1 border rounded-sm text-base px-2'
             placeholder='Email'
             type='email'
             />
-            <button className='bg-blue-950 text-white font-medium text-lg'>Subscribe</button>
+            <button className='bg-blue-950 text-white font-medium text-base rounded-sm px-3 py-1'>Subscribe</button>
         </div>
       </form>
     </div>
+    <Footer/>
     </>
   )
 }
