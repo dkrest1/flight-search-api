@@ -1,9 +1,12 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlane } from '@fortawesome/free-solid-svg-icons'
 import React from 'react'
+import Navbar from '../Navbar'
 
 const Bookings = () => {
   return (
+    <>
+    <Navbar/>
     <div className='h-full bg-white flex flex-col px-10'>
       <div className='mt-10 flex flex-row w-full gap-10'>
         <div className='flex flex-col w-[50%] rounded-lg border-2 border-red-100 pb-5'>
@@ -54,6 +57,7 @@ const Bookings = () => {
         </div>
       </div>
     </div>
+    </>
   )
 }
 
