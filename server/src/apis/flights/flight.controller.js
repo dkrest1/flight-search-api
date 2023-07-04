@@ -2,7 +2,6 @@ import { flightSearcService, flightComfirmationService, flightBookingService } f
 import { logger } from "../../config/logger.config.js";
 import Joi from "joi";
 import BookingModel from "./model/flight.model.js"
-import { redisClient } from "../../config/redis.config.js";
 
 
 //@description: search flight info 
