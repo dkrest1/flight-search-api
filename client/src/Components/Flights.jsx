@@ -6,7 +6,7 @@ import Select from 'react-select'
 import airports from './airports.json'
 import { useState } from 'react'
 
-const DropDownSearch =({selectedOption, setSelectedOption, options})=>{
+export const DropDownSearch =({selectedOption, setSelectedOption, options})=>{
   
   const handleChange =(selectedOption)=>{
     setSelectedOption(selectedOption)
@@ -15,7 +15,7 @@ const DropDownSearch =({selectedOption, setSelectedOption, options})=>{
   return(
     <div>
       <Select
-        className=''
+        className='md:text-base'
         options={options}
         value={selectedOption}
         onChange={handleChange}
