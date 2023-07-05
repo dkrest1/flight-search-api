@@ -63,7 +63,7 @@ export const comfirmFlightController = async (req, res) => {
             }
 
         })
-        return res.status(200).json({ success: true, data: flightBookingComfirmation })
+        return res.status(201).json({ success: true, data: flightBookingComfirmation })
     } catch (err) {
         console.log(err)
         return res.status(400).json({
