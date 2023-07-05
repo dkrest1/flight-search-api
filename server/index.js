@@ -8,8 +8,6 @@ import chalk from "chalk";
 import userRoute from "./src/apis/users/user.route.js";
 import flightRoute from "./src/apis/flights/flight.route.js";
 import { redisClient } from "./src/config/redis.config.js"
-import axios from "axios";
-
 
 
 const app = express()
@@ -19,8 +17,7 @@ const port = process.env.PORT
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
-
+app.use(cors())
 
 app.use("/user", userRoute);
 app.use("/flight", flightRoute)
@@ -41,7 +38,7 @@ const options = {
             },
         ],
     },
-    apis: ["./src/modules/**/*.route.js"],
+    apis: ["./src/apis/**/*.route.js"],
 };
 
 const specs = swaggerJSDoc(options);
