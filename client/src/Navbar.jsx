@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom'
 import logo from './Assets/flight-logo.png'
 function Navbar() {
   return (
-        <nav className='flex flex-row w-full bg-hero-img py-4 px-10'>
+        <nav className='flex flex-row w-full bg-hero-img box-content py-4 px-10'>
             <div className='flex flex-row w-full justify-between '>
                 <NavLink to='/' className='flex flex-row text-white gap-2 font-semibold text-xl'>
                     <img src={logo} alt='logo' className='absolute w-24 h-24 -mt-8 -ml-9'/>
