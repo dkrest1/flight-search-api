@@ -9,8 +9,15 @@ import Details from './Components/Details';
 import Login from './Components/Auth/Login';
 import Signup from './Components/Auth/Signup';
 import { useEffect } from 'react';
+import { accesstoken } from './Components/redux/tokenSlice';
+import { user } from './Components/redux/userSlice';
+import { useSelector } from 'react-redux';
 
 function App() {
+  const token = useSelector(accesstoken)
+  const users = useSelector(user)
+  console.log(token)
+  console.log(users)
   // // const location = useLocation();
 
   // // const useScrollToTop = () => {
@@ -21,7 +28,7 @@ function App() {
   //   }, [location]);
   // // };
   return (
-   <div className='h-screen flex flex-col b-hero-img bg-cover bg-no-repeat'>
+   <div className='h-screen w-screen box-content flex flex-col bg-cover bg-no-repeat'>
     <BrowserRouter>
       <Routes>
         <Route exact path='/' element={<Home/>}/>

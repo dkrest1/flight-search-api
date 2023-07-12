@@ -9,11 +9,31 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from 'react-slick'
 import Footer from './Footer'
+import { useEffect } from 'react'
+import axios from 'axios'
+import { accesstoken } from './redux/tokenSlice'
+import { useSelector } from 'react-redux'
 
 
 const Home = () => {
+  const token = useSelector(accesstoken)
   const [departureOption, setDepartureOption] = useState(null)
   const [arrivalOption, setArrivalOption] = useState(null)
+  const [searchInputs, setSearchInputs] = useState({
+    origin: null,
+    destination: (arrivalOption ? arrivalOption.label : null),
+    departure_date: "",
+    adults: ""
+  })
+  const [isPending, setIsPending] = useState(false) 
+  useEffect(()=>{
+    if(departureOption){
+      setSearchInputs((prevValues)=>({...prevValues, origin:departureOption.label}))
+    }
+    if(arrivalOption){
+      setSearchInputs((prevValues)=>({...prevValues, destination: arrivalOption.label}))}
+    console.log(departureOption, arrivalOption)
+  },[departureOption, arrivalOption])
   const options = airports.map((item)=>({
     value: item.code,
     label: `${item.city} - ${item.code} `,
@@ -26,10 +46,32 @@ const Home = () => {
     SlideToScroll: 1,
   }
 
+  const onInputChange=()=>{
+    const {name, value} = event.target
+    setSearchInputs((prevValues)=>({...prevValues, [name]: value}))
+  }
+  const handleSearchFlight=(event)=>{
+    event.preventDefault()
+    setIsPending(true)
+    console.log(searchInputs)
+    const headers = {
+      Authorization: `Bearer ${token}`
+    }
+    axios.post('https://flight-search-api.onrender.com/flight/search', {headers}, searchInputs)
+    .then((response)=>{
+      console.log(response)
+      setIsPending(false)
+    })
+    .catch((error)=>{
+      console.log(error)
+      setIsPending(false)
+    })
+  }
+
   return (
-    <div className=' box-content w-full'>
+    <div className='w-full sm:min-h-screen'>
       <Navbar/>
-      <div className='hidden sm:flex flex-col bg-hero-img bg-cover w-full h-full justify-center px-8'>
+      <div className='hidden sm:flex flex-col bg-hero-img bg-cover w-full h-[93%] justify-center px-8'>
         <div className='hidden sm:flex flex-col text-white font-bold font-sans text-8xl tracking-wider gap-2'>
           <h1>Ready To</h1>
           <h1>Takeoff?</h1>
@@ -49,7 +91,7 @@ const Home = () => {
           <p>It's a big world out there, book your flight tickets easily and explore your dream destinations</p>
         </div>
         <div className='w-full mt-6 '>
-          <form className='w-full flex flex-col'>
+          <form onSubmit={handleSearchFlight} className='w-full flex flex-col'>
             <select name='class'className='border border-slate-300 rounded p-2'>
               <option value=''>First class</option>
               <option value='' >First class</option>
@@ -57,18 +99,28 @@ const Home = () => {
               </select>
               <div className='relative text-sm mt-2'>
                 <small className='absolute left-1 -top-1 z-10 text-[9px]'>From</small>
-                <DropDownSearch selectedOption={departureOption} setSelectedOption={setDepartureOption} options={options} className=''/>
+                <DropDownSearch name='origin' selectedOption={departureOption} setSelectedOption={setDepartureOption} options={options}  className=''/>
               </div>
               <div className='relative text-sm mt-2'>
                 <small className='absolute left-1 -top-1 z-10 text-[9px]'>To</small>
-                <DropDownSearch selectedOption={arrivalOption} setSelectedOption={setArrivalOption} options={options} className=''/>
+                <DropDownSearch name='destination' selectedOption={arrivalOption} setSelectedOption={setArrivalOption} options={options} className=''/>
               </div>
               <div className='flex flex-row w-full gap-6 mt-2 h-12'>
-                <input type='date' className='border rounded w-1/2 p-1'/>
+                <input type='date' 
+                  name='departure_date' 
+                  value={searchInputs.departure_date} 
+                  onChange={onInputChange}
+                  className='border rounded w-1/2 p-1'
+                />
                 <div className='flex flex-row border rounded gap-2 w-1/2 p-1'>
                   <div className='flex flex-col'>
                     <small className='text-slate-500'>Passengers</small>
-                    <input type='number' className='-mt-1 focus:outline-none'/>
+                    <input type='number' 
+                      name='adults' 
+                      value={searchInputs.adults}
+                      onChange={onInputChange} 
+                      className='-mt-1 focus:outline-none'
+                    />
                   </div>
                   <div className='-ml-12 mt-3 flex flex-row'>
                     <FontAwesomeIcon icon={faUser} className='text-slate-500 text-sm'/>
