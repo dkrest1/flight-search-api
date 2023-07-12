@@ -1,21 +1,75 @@
-import React from 'react'
+import axios from 'axios'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-
-
+import Cookies from 'js-cookie'
+import { accesstoken } from '../redux/tokenSlice'
+import { useSelector, useDispatch } from 'react-redux'
+import { getToken } from '../redux/tokenSlice'
+import { getUser } from '../redux/userSlice'
 const Login = () => {
+    const [loginData, setLoginData] = useState({
+        email: "",
+        password:""
+    })
+    const token = useSelector(accesstoken)  
+    // console.log(token)
+    const [prompt, setPrompt] =useState("")
+    const [isPending, setIsPending] = useState(false)
+    const handleOnChange=()=>{
+        const {name, value} = event.target
+        setLoginData((prevValues)=>({...prevValues, [name]: value}))
+    }
+    const dispatch = useDispatch()
+    
+    const handleLogin=(event)=>{
+        event.preventDefault()
+        setIsPending(true)
+        axios.post('https://flight-search-api.onrender.com/user/login', loginData)
+        .then((response)=>{
+            console.log(response)
+            if(response.status ===200){
+                let atoken = response.data.access_token
+                Cookies.set('token', atoken )
+                dispatch(getToken(atoken))
+                const headers = {
+                    Authorization: `Bearer ${atoken}`
+                  }
+                axios.get('https://flight-search-api.onrender.com/user/me', {headers})
+                .then((response)=>{
+                    console.log(response) 
+                    if(response.status===200){
+                        dispatch(getUser(response.data.data))
+                        setPrompt("Login Successful!")
+                        alert("Login Successful!")
+                    }
+                })
+                .catch((error)=>{
+                    console.log(error)
+                })
+            }
+            setIsPending(false)
+        })
+        .catch((error)=>{
+            console.log(error)
+            setIsPending(false)
+        })
+    }
   return (
     <div className=' h-full w-full flex flex-col items-center md:h-full bg-white md:justify-center md:items-center'>
         <div className='h-[100%] md:h-fit flex flex-col items-center bg-white w-full md:w-[28%] px-8 pt-10 pb-5 rounded-md'>
             <h3 className='font-medium text-lg'>Welcome back!</h3>
             <p className='text-[10px] text-slate-500'>Login your account to continue</p>
-            <form className='w-full'>
+            <form className='w-full' onSubmit={handleLogin}>
                 <div className='flex flex-col mt-2'>
                     <label htmlFor='email' className='text-sm text-slate-400'>Email</label>
                     <input
                         className='text-sm  border-t border-x border-b-2 border-b-slate-300 rounded-lg shadow-lg py-2 px-1'
                         type='email'
+                        name='email'
                         placeholder='Johndoe123@gmail.com'
+                        value={loginData.email}
                         required
+                        onChange={handleOnChange}
                     />
                 </div>
                 <div className='flex flex-col mt-2'>
@@ -23,21 +77,24 @@ const Login = () => {
                     <input
                         className='text-sm  border-t border-x border-b-2 border-b-slate-300 rounded-lg shadow-lg py-2 px-1'
                         type='password'
+                        name='password'
                         placeholder='Johndoe123@gmail.com'
+                        value={loginData.password}
+                        onChange={handleOnChange}
                         required
                     />
                 </div>
                 <p className='text-sm mt-3 text-right'>
                     <Link to='#' className='text-blue-600'>Forgot Password</Link>
                 </p>
-                <button className='bg-blue-950 w-full mt-3 text-center text-white font-medium text-sm py-2 border-t border-x border-b-2 border-b-slate-300 rounded-md shadow-lg px-1'>Sign Up</button>
+                <button className= {` w-full mt-3 text-center font-medium text-sm py-2 border-t border-x border-b-2 border-b-slate-300 rounded-md shadow-lg px-1${isPending ? ' bg-gray-400 text-slate-600': ' bg-blue-950 text-white'}` }   disabled={isPending} >Login</button>
             </form>
             <div className='flex flex-row w-full gap-2 items-center mt-3'>
                 <div className='border border-gray-200 h-[2px] w-full'></div>
                 <p className='text-sm'>OR</p>
                 <div className='border border-gray-200 w-full'></div>
             </div>
-            <button className='w-full text-sm mt-5 border-t border-x border-b-2 border-b-slate-300 rounded-lg shadow-lg py-2 px-1'><i className='fab fa-google text-red-600 '></i> Sign in with Google
+            <button className='w-full text-sm mt-5 border-t border-x border-b-2 border-b-slate-300 rounded-lg shadow-lg py-2 px-1' ><i className='fab fa-google text-red-600 '></i> Sign in with Google
             </button>
             <p className='text-sm mt-3 text-slate-600 font-medium'> Don't have an account? <Link to='/login' className='text-blue-600 '>Sign Up</Link></p>
         </div>
