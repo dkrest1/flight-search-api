@@ -9,11 +9,13 @@ import { accesstoken } from './redux/tokenSlice'
 import { useSelector } from 'react-redux'
 import Navbar from '../Navbar'
 import PulseLoader from 'react-spinners/PulseLoader'
+import FlightSearchMobile from './FlightSearchMobile'
 
-export const DropDownSearch =({selectedOption, setSelectedOption, options})=>{
+export const DropDownSearch =({selectedOption, setSelectedOption, options, setError})=>{
   
   const handleChange =(selectedOption)=>{
     setSelectedOption(selectedOption)
+    setError()
   }
 
   return(
@@ -37,10 +39,10 @@ function Flights() {
     origin: null,
     destination: null,
     departure_date: "",
-    adults: ""
+    adults: 0
   })
-  const [isPending, setIsPending] = useState(false) 
-  const [prompt, setPrompt] = useState({})
+  const [isPending, setIsPending] = useState(false)
+  const [errors, setErrors] = useState(null) 
   useEffect(()=>{
     if(departureOption){
       setSearchInputs((prevValues)=>({...prevValues, origin:departureOption.label}))
@@ -56,6 +58,7 @@ function Flights() {
   const onInputChange=()=>{
     const {name, value} = event.target
     setSearchInputs((prevValues)=>({...prevValues, [name]: value}))
+    setErrors((prevValues)=>({...prevValues, [name]:""}))
   }
   const verifyInputs=()=>{
     let errors ={}
@@ -73,10 +76,12 @@ function Flights() {
       errors.departure_date="Please select flight date"
       console.log(errors.departure_date)
     }  
+    if(departureOption && arrivalOption && departureOption===arrivalOption){
+      errors.match= "Match! Origin cannot be the same as destination."
+      console.log(errors.match)
+    }
     return errors
   }
-  
-  // console.log(validated)
   const handleSearchFlight=(event)=>{
     setIsPending(true)
     event.preventDefault()
@@ -101,24 +106,34 @@ function Flights() {
     }
     else{
       setIsPending(false)
+      setErrors(validated)
       console.log("something happened")
     }
+  }
+  const setDepartureError=()=>{
+    setErrors((prevValues)=>({...prevValues, departureOption:""}))
+  }
+  const setArrivalError=()=>{
+    setErrors((prevValues)=>({...prevValues, arrivalOption:""}))
   }
 
   return (
     <>
       <Navbar/>
-      <div className='w-[100%] h-full flex flex-col items-center mt-3 bg-white'>
+      <div className='md:hidden p-2'>
+        <FlightSearchMobile/>
+      </div>
+      <div className='hidden w-[100%] h-full md:flex flex-col items-center mt-3 bg-white'>
         <div className='w-[90%] flex flex-col rounded-lg shadow-xl h- pb-10 px-2 mt-10 border-2 '>
           <div className='flex flex-row divide-x text-xs rounded border-2 w-fit mt-3 mx-3'>
             <button className='p-1'>FIRST</button>
             <button className='p-1'>ECONOMY</button>
             <button className='p-1'>BUSINESS</button>
           </div>
-          <div className='w-full' >
-            <form onSubmit={handleSearchFlight} className='flex flex-row mt-4 gap-5 mx-2'>
+          <div className='w-[100%]' >
+            <form onSubmit={handleSearchFlight} className='flex flex-row mt-4 gap-5 mx-2 w-[100%]'>
               <div className='w-[45%] flex flex-row divide-x-2 rounded-lg border-2'>
-                <div className='w-[50%] flex flex-row divide-x py-4 items-center'>
+                <div className={`w-[50%] flex flex-row divide-x py-4 items-center ${errors && errors.departureOption && 'outline outline-red-300'}`}>
                   <div className=' flex flex-row justify-center items-center rounded-full bg-blue-950 w-7 h-6 mx-1'>
                     <FontAwesomeIcon 
                     className='text-white text-sm'
@@ -126,66 +141,67 @@ function Flights() {
                   </div>
                   <div className='flex flex-col pl-1 w-full px-3'>
                     <small className='text-xs text-slate-400 font-medium mb-1'>Departure</small>
-                    <div className=' w-full font-medium text-blue-950'>
-                      <DropDownSearch selectedOption={departureOption} setSelectedOption={setDepartureOption} options={options} />
+                    <div className={`w-full font-medium text-blue-950 `}>
+                      <DropDownSearch selectedOption={departureOption} setSelectedOption={setDepartureOption} options={options} setError={setDepartureError} 
+                      />
                     </div>
                   </div>
                 </div>
-                <div className='w-[50%] flex flex-row divide-x pl-1 py-2 items-center'>
-                <div className=' flex flex-row justify-center items-center rounded-full bg-blue-950 w-7 h-6 mx-1'>
+                <div className={`w-[50%] flex flex-row divide-x pl-1 py-2 items-center ${errors && errors.arrivalOption && 'outline outline-red-300'}`}>
+                <div className='flex flex-row justify-center items-center rounded-full bg-blue-950 w-7 h-6 mx-1'>
                     <FontAwesomeIcon 
                     className='text-white text-sm'
                     icon={faPlaneArrival} />
                   </div>
                   <div className='flex flex-col w-full px-1'>
                     <small className='text-xs text-slate-400 font-medium mb-1'>Arrival</small>
-                    <div className='w-full font-medium text-blue-950'>
-                      <DropDownSearch selectedOption={arrivalOption} setSelectedOption={setArrivalOption} options={options} 
+                    <div className={`w-full font-medium text-blue-950 `}>
+                      <DropDownSearch selectedOption={arrivalOption} setSelectedOption={setArrivalOption} options={options} setError={setArrivalError} 
                       />
                     </div>
                   </div>
                 </div>
               </div>
               <div className='w-[45%] flex flex-row divide-x-2  rounded-lg border-2'>
-                <div className='w-[50%] flex flex-row divide-x py-2 items-center'>
+                <div className={`w-[50%] flex flex-row divide-x py-2 items-center ${errors && errors.departure_date && 'outline outline-red-300'}`}>
                   <div className=' flex flex-row justify-center items-center rounded-full bg-blue-950 w-6 h-6 mx-1'>
                       <FontAwesomeIcon 
                       className='text-white text-sm'
                       icon={faCalendarDays} />
-                    </div>              
-                    <div className='flex flex-col pl-1'>
-                      <small className='text-sm font-medium text-slate-400'>Departure Date</small>
-                      <p className='text-sm font-medium text-blue-950'>
-                        <input 
-                          type='date'
-                          name='departure_date'
-                          value={searchInputs.departure_date}
-                          onChange={onInputChange}
-                          />
-                      </p>
-                    </div>
+                  </div>              
+                  <div className='flex flex-col pl-1'>
+                    <small className='text-sm font-medium text-slate-400'>Departure Date</small>
+                    <p className='text-sm font-medium text-blue-950'>
+                      <input 
+                        type='date'
+                        name='departure_date'
+                        value={searchInputs.departure_date}
+                        onChange={onInputChange}
+                        />
+                    </p>
                   </div>
-                  <div className='w-[50%] flex flex-row divide-x  items-center mx-1 '>
-                    <div className=' flex flex-row justify-center items-center rounded-full bg-blue-950 w-6 h-6 mx-1'>
-                      <FontAwesomeIcon 
-                      className='text-white text-sm'
-                      icon={faShoePrints}
-                      rotation={270}
-                      />
-                    </div>
-                    <div className='w-full flex flex-col '>
-                      <small className='text-sm mx-1 text-slate-400 font-medium'>Passengers</small>
-                      <input type='number'
-                        name='adults'
-                        value={searchInputs.adults}
-                        onChange={onInputChange} 
-                        className='text-sm font-medium text-blue-950 mx-1 focus:outline-none'
-                      />
-                    </div>
+                </div>
+                <div className='w-[50%] flex flex-row divide-x  items-center mx-1 '>
+                  <div className=' flex flex-row justify-center items-center rounded-full bg-blue-950 w-6 h-6 mx-1'>
+                    <FontAwesomeIcon 
+                    className='text-white text-sm'
+                    icon={faShoePrints}
+                    rotation={270}
+                    />
                   </div>
+                  <div className='w-full flex flex-col '>
+                    <small className='text-sm mx-1 text-slate-400 font-medium'>Passengers</small>
+                    <input type='number'
+                      name='adults'
+                      value={searchInputs.adults}
+                      onChange={onInputChange} 
+                      className='text-sm font-medium text-blue-950 mx-1 focus:outline-none'
+                    />
+                  </div>
+                </div>
               </div>
-              <div className='flex flex-row items-center'>
-                <button className={`bg-blue-950 font-bold text-slate-200 py-4 px-5 rounded-lg ${isPending && 'w-20 px-2'}`}
+              <div className='flex flex-row items-center w-[10%]'>
+                <button className={`bg-blue-950 w-full mr-2 font-bold text-slate-200 py-4 px-3 rounded-lg ${isPending && 'w-20 px-2'}`}
                   disabled={isPending}> {!isPending ? <span>SEARCH</span> :<PulseLoader color="#ffffff" size={7}/>}
                 </button> 
                 
