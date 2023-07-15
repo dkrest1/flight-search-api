@@ -10,6 +10,7 @@ import { useSelector } from 'react-redux'
 import Navbar from '../Navbar'
 import PulseLoader from 'react-spinners/PulseLoader'
 import FlightSearchMobile from './FlightSearchMobile'
+import { NavLink } from 'react-router-dom'
 
 export const DropDownSearch =({selectedOption, setSelectedOption, options, setError})=>{
   
@@ -116,7 +117,31 @@ function Flights() {
   const setArrivalError=()=>{
     setErrors((prevValues)=>({...prevValues, arrivalOption:""}))
   }
-
+  const [classSelected, setClassSelected] = useState(null)
+  const handleOptionclick=(optionClick)=>{
+    setClassSelected(optionClick)
+    console.log(optionClick)
+  }
+  const flightClass=(
+      <div className='flex flex-row items-center divide-x'>
+        <button 
+        className={` rounded px-2 py-1 text-xs ${classSelected==='first' ? 'bg-blue-900 text-white' : ' text-black'}`}
+        onClick={()=>handleOptionclick('first')}
+        >FIRST
+        </button>
+        <button 
+        className={` rounded px-2 py-1 text-xs ${classSelected==='economy' ? 'bg-blue-900 text-white text-sm' : ' text-black'}`}
+        onClick={()=>handleOptionclick('economy')}
+        >ECONOMY
+        </button>
+        <button 
+        className={` rounded px-2 py-1 text-xs ${classSelected==='business' ? 'bg-blue-900 text-white text-sm' : ' text-black'}`}
+        onClick={()=>handleOptionclick('business')}
+        >BUSINESS
+        </button>
+      </div>
+    )
+  
   return (
     <>
       <Navbar/>
@@ -126,9 +151,7 @@ function Flights() {
       <div className='hidden w-[100%] h-full md:flex flex-col items-center mt-3 bg-white'>
         <div className='w-[90%] flex flex-col rounded-lg shadow-xl h- pb-10 px-2 mt-10 border-2 '>
           <div className='flex flex-row divide-x text-xs rounded border-2 w-fit mt-3 mx-3'>
-            <button className='p-1'>FIRST</button>
-            <button className='p-1'>ECONOMY</button>
-            <button className='p-1'>BUSINESS</button>
+            {flightClass}
           </div>
           <div className='w-[100%]' >
             <form onSubmit={handleSearchFlight} className='flex flex-row mt-4 gap-5 mx-2 w-[100%]'>
@@ -276,7 +299,7 @@ function Flights() {
         </div>
       </div>
     </>
-  )
+   )
 }
 
 export default Flights
