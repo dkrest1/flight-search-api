@@ -28,7 +28,7 @@ function App() {
   //   }, [location]);
   // // };
   return (
-   <div className='h-screen w-screen box-content flex flex-col bg-cover bg-no-repeat'>
+   <div className='h-screen w-full box-content flex flex-col bg-cover bg-no-repeat'>
     <BrowserRouter>
       <Routes>
         <Route exact path='/' element={<Home/>}/>
