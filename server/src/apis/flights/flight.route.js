@@ -232,7 +232,7 @@ router.post("/comfirm/:id", auth, flightRateLimiter, comfirmFlightController);
  *         description: server error, please try again later.
  *
  */
-router.post("/book/:id", auth, flightRateLimiter, bookFlightController);
+router.post("/book/:id", auth, bookFlightController);
 
 // Book Model or User Entity
 /**
