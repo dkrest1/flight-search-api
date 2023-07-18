@@ -16,8 +16,8 @@ import { useSelector } from 'react-redux';
 function App() {
   const token = useSelector(accesstoken)
   const users = useSelector(user)
-  console.log(token)
-  console.log(users)
+  // console.log(token)
+  // console.log(users)
   // // const location = useLocation();
 
   // // const useScrollToTop = () => {

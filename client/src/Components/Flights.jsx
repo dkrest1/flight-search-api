@@ -2,7 +2,6 @@ import React from 'react'
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 import { faFilter, faPlane, faSort, faUser, faPlaneDeparture, faPlaneArrival, faCalendarDays, faShoePrints} from '@fortawesome/free-solid-svg-icons'
 import axios from 'axios'
-import Select from 'react-select'
 import airports from './airports.json'
 import { useState, useEffect } from 'react'
 import { accesstoken } from './redux/tokenSlice'
@@ -11,28 +10,12 @@ import Navbar from '../Navbar'
 import PulseLoader from 'react-spinners/PulseLoader'
 import FlightSearchMobile from './FlightSearchMobile'
 import { NavLink } from 'react-router-dom'
+import DropDownSearch from './DropDownSearch'
+import SearchResult from './SearchResult'
 
-export const DropDownSearch =({selectedOption, setSelectedOption, options, setError})=>{
-  
-  const handleChange =(selectedOption)=>{
-    setSelectedOption(selectedOption)
-    setError()
-  }
 
-  return(
-    <div>
-      <Select
-        className='md:text-base'
-        options={options}
-        value={selectedOption}
-        onChange={handleChange}
-        isSearchable
-        placeholder=''
-        />
-    </div>
-  )
-}
 function Flights() {
+  const [rubbish, setRubbish] = useState("this is rubbish")
   const token = useSelector(accesstoken)
   const [departureOption, setDepartureOption] = useState(null)
   const [arrivalOption, setArrivalOption] = useState(null)
@@ -44,13 +27,14 @@ function Flights() {
   })
   const [isPending, setIsPending] = useState(false)
   const [errors, setErrors] = useState(null) 
+  const [searchData, setSearchData] = useState(null)
   useEffect(()=>{
     if(departureOption){
-      setSearchInputs((prevValues)=>({...prevValues, origin:departureOption.label}))
+      setSearchInputs((prevValues)=>({...prevValues, origin:departureOption.value}))
     }
     if(arrivalOption){
-      setSearchInputs((prevValues)=>({...prevValues, destination: arrivalOption.label}))}
-    console.log(departureOption, arrivalOption)
+      setSearchInputs((prevValues)=>({...prevValues, destination: arrivalOption.value}))}
+    // console.log(departureOption, arrivalOption)
   },[departureOption, arrivalOption])
   const options = airports.map((item)=>({
     value: item.code,
@@ -98,6 +82,8 @@ function Flights() {
       axios.post('https://flight-search-api.onrender.com/flight/search', searchInputs, {headers} )
       .then((response)=>{
         console.log(response)
+        let data= response.data.data
+        setSearchData(data)
         setIsPending(false)
       })
       .catch((error)=>{
@@ -112,7 +98,8 @@ function Flights() {
     }
   }
   const setDepartureError=()=>{
-    setErrors((prevValues)=>({...prevValues, departureOption:""}))
+    console.log('clear departure error')
+    // setErrors((prevValues)=>({...prevValues, departureOption:""}))
   }
   const setArrivalError=()=>{
     setErrors((prevValues)=>({...prevValues, arrivalOption:""}))
@@ -165,7 +152,7 @@ function Flights() {
                   <div className='flex flex-col pl-1 w-full px-3'>
                     <small className='text-xs text-slate-400 font-medium mb-1'>Departure</small>
                     <div className={`w-full font-medium text-blue-950 `}>
-                      <DropDownSearch selectedOption={departureOption} setSelectedOption={setDepartureOption} options={options} setError={setDepartureError} 
+                      <DropDownSearch selectedOption={departureOption} setSelectedOption={setDepartureOption} options={options} setError={setDepartureError} rubbish={rubbish} setRubbish={setRubbish}
                       />
                     </div>
                   </div>
@@ -254,49 +241,7 @@ function Flights() {
           </div>
         </div>
         {/* Dynamic search data from server */}
-        <div className='w-[90%] mt-3 '>
-          <div className='w-full flex flex-row rounded-lg divide-2 border-2 shadow-sm h-full items'>
-            <div className='w-[14%] flex flex-row justify-center items-center border-r border-slate-300 py-3 px'>
-              <img src=''alt='airline image' className=' h-full '/>
-            </div>
-            <div className='w-[43%] flex flex-row border-dashed border-r border-slate-300 h-full items-center justify-center gap-10 py-7'>
-              <div className='flex flex-col items-center'>
-                <h2 className='font-semibold text-4xl tracking-wider'>LOS</h2>
-                <small className=' text-slate-500 font-medium'>12:20 AM</small>
-              </div>
-              <div className='flex flex-col items-center gap-2 -mt-2'>
-                <small className='text-xs text-slate-500 font-medium'>15h 40m</small>
-                <FontAwesomeIcon 
-                  icon={faPlane} 
-                  className='text-lg text-blue-950'
-                />
-                <small className='hidde text-xs text-slate-500 font-medium'>2 Stops</small>
-              </div>
-              <div className='flex flex-col items-center'>
-                <p className='font-semibold text-4xl tracking-wide'>TYO</p>
-                <small className='text-xs text-slate-500 font-medium'>04:00 AM</small>
-              </div>
-            </div>
-            <div className='flex flex-row w-[43%] justify-end items-center gap-32 mx-5'>
-              <div className='flex flex-col items-center gap-1'>
-                <small className='text-xs text-slate-500 font-medium'>price per seat</small>
-                <h3 className='text-4xl font-semibold tracking-wide -ml-'>$2400</h3>
-                  <small className='text-xs text-slate-500 font-medium'>
-                    <FontAwesomeIcon icon={faUser} className='text-blue-950' /> First Class</small>
-              </div>
-              <div className='flex flex-col items-center gap-2'>
-                <button className='bg-blue-950 text-slate-200 text-sm w-fit py-2 px-3 rounded-lg'>Book Now</button>
-                <small className='text-xs text-slate-500 font-medium'>10/300 Available Seats</small>
-              </div>
-            </div>
-          </div>
-        </div>
-        {/* Pagination */}
-        <div className='flex flex-row mt-6 gap-3 font-medium'>
-          <button className='bg-gray-300 px-3 py-1 rounded hover:bg-blue-950 hover:text-white'>PREV</button>
-          <p>1</p>
-          <button className='border-2 rounded px-3 py-1 border-gray-300 text-sm hover:border-none hover:bg-blue-950 hover:text-white'>NEXT</button>
-        </div>
+        <SearchResult searchData={searchData}/>
       </div>
     </>
    )
