@@ -1,7 +1,7 @@
 import React from 'react'
 import airports from './airports.json'
 import { useState, useEffect } from 'react'
-import { DropDownSearch } from './Flights'
+import DropDownSearch from './DropDownSearch'
 import { faUser } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { accesstoken } from './redux/tokenSlice'
@@ -22,11 +22,11 @@ const FlightSearchMobile = () => {
   const [errors, setErrors] = useState(null)
   useEffect(()=>{
     if(departureOption){
-      setSearchInputs((prevValues)=>({...prevValues, origin:departureOption.label}))
+      setSearchInputs((prevValues)=>({...prevValues, origin:departureOption.value}))
     }
     if(arrivalOption){
-      setSearchInputs((prevValues)=>({...prevValues, destination: arrivalOption.label}))}
-    console.log(departureOption, arrivalOption)
+      setSearchInputs((prevValues)=>({...prevValues, destination: arrivalOption.value}))}
+    // console.log(departureOption, arrivalOption)
   },[departureOption, arrivalOption])
   const options = airports.map((item)=>({
     value: item.code,

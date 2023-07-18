@@ -2,7 +2,7 @@ import { faUser } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React from 'react'
 import Navbar from '../Navbar'
-import { DropDownSearch } from './Flights'
+import DropDownSearch from './DropDownSearch'
 import airports from './airports.json'
 import { useState } from 'react'
 import "slick-carousel/slick/slick.css";
@@ -12,6 +12,7 @@ import Footer from './Footer'
 import { accesstoken } from './redux/tokenSlice'
 import { useSelector } from 'react-redux'
 import FlightSearchMobile from './FlightSearchMobile'
+import { Link } from 'react-router-dom'
 
 const Home = () => {
   const token = useSelector(accesstoken)
@@ -38,7 +39,7 @@ const Home = () => {
             <p>tickets easily and explore your dream destination.</p>
           </div>
           <div>
-            <button className='text-white text-2xl font-medium mt-6 px-9 rounded-md bg-blue-950 py-2'>Book Now
+            <button className='text-white text-2xl font-medium mt-6 px-9 rounded-md bg-blue-950 py-2'> <Link to='/flights'>Book Now</Link>
             </button>
           </div>
         </div>
