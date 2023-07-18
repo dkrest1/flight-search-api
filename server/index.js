@@ -34,7 +34,7 @@ const options = {
         },
         servers: [
             {
-                url: "http://localhost:3000",
+                url: process.env.WEB_URL,
             },
         ],
     },
