@@ -4,7 +4,7 @@ import chalk from "chalk";
 
 export const redisClient = createClient({
     socket: { keepAlive: 10000000 },
-    url: process.env.URL,
+    url: process.env.REDIS_URL,
     database: 0
 });
 
