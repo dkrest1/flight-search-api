@@ -151,8 +151,8 @@ router.post("/comfirm/:id", auth, flightRateLimiter, comfirmFlightController);
  *         - adults
  *         - travelerId
  *         - dateOfBirth
- *         - firstname
- *         - lastname
+ *         - firstName
+ *         - lastName
  *         - gender
  *         - email
  *         - countryCode
@@ -178,10 +178,10 @@ router.post("/comfirm/:id", auth, flightRateLimiter, comfirmFlightController);
  *           type: string
  *           format: date
  *           description: The passenger date of birth
- *         firstname:
+ *         firstName:
  *           type: string
  *           description: The passenger firstname
- *         lastname:
+ *         lastName:
  *           type: string
  *           description: The passenger lastname
  *         gender:

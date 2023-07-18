@@ -1,7 +1,7 @@
 import rateLimit from "express-rate-limit";
 
 const WindowSizeInHour = 0.5; // half an hour
-const maxWindowRequestCount = 10;
+const maxWindowRequestCount = 15;
 
 export const flightRateLimiter = rateLimit({
     windowMs: WindowSizeInHour * 60 * 60 * 1000, // 1hr
