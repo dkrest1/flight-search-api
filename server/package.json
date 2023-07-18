@@ -4,6 +4,9 @@
   "description": "flight search api",
   "main": "index.js",
   "type": "module",
+  "engines": {
+    "node": ">=16 <19"
+  },
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js"
