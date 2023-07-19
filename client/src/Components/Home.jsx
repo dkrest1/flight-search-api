@@ -13,9 +13,12 @@ import { accesstoken } from './redux/tokenSlice'
 import { useSelector } from 'react-redux'
 import FlightSearchMobile from './FlightSearchMobile'
 import { Link } from 'react-router-dom'
+import SearchResult from './SearchResult'
+import useFlightStore from './zustand store/ZStore'
 
 const Home = () => {
   const token = useSelector(accesstoken)
+  const {flightData} = useFlightStore()
   const settings = {
     dots: false,
     infinite:false,
@@ -25,7 +28,7 @@ const Home = () => {
   }
 
   return (
-    <div className='w-full sm:min-h-screen'>
+    <div className='w-[full] sm:min-h-screen'>
       <Navbar />
       {/* Larger screen view */}
       <div className='hidden sm:block bg-hero-img bg-cover w-full h-full'>
@@ -51,6 +54,10 @@ const Home = () => {
           <p>It's a big world out there, book your flight tickets easily and explore your dream destinations</p>
         </div>
         <FlightSearchMobile/>
+        { flightData &&
+        <div className='w-full flex flex-col items-center mt-4'>
+          <SearchResult/>
+        </div>}
         <div className='mt-7 font-semibold text-lg '>
           <h2>Top Deals</h2>
           <div className='w-full flex flex-col h-44 mt-2'>

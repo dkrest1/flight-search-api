@@ -1,8 +1,8 @@
 import Select from 'react-select'
 
 
-const DropDownSearch =({ setSelectedOption, rubbish, options, selectedOption})=>{
-    const handleChange =(selectedOption, rubbish)=>{
+const DropDownSearch =({setSelectedOption, options, selectedOption})=>{
+    const handleChange =(selectedOption)=>{
       setSelectedOption(selectedOption)
     }
     return(

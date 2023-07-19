@@ -12,18 +12,19 @@ import FlightSearchMobile from './FlightSearchMobile'
 import { NavLink } from 'react-router-dom'
 import DropDownSearch from './DropDownSearch'
 import SearchResult from './SearchResult'
+import useFlightStore from './zustand store/ZStore'
 
 
 function Flights() {
-  const [rubbish, setRubbish] = useState("this is rubbish")
   const token = useSelector(accesstoken)
+  const {flightData, addFlight} = useFlightStore()
   const [departureOption, setDepartureOption] = useState(null)
   const [arrivalOption, setArrivalOption] = useState(null)
   const [searchInputs, setSearchInputs] = useState({
     origin: null,
     destination: null,
     departure_date: "",
-    adults: 0
+    adults: '1'
   })
   const [isPending, setIsPending] = useState(false)
   const [errors, setErrors] = useState(null) 
@@ -84,6 +85,8 @@ function Flights() {
         console.log(response)
         let data= response.data.data
         setSearchData(data)
+        addFlight(data)
+        localStorage.setItem('flight-data', JSON.stringify(data))
         setIsPending(false)
       })
       .catch((error)=>{
@@ -152,7 +155,7 @@ function Flights() {
                   <div className='flex flex-col pl-1 w-full px-3'>
                     <small className='text-xs text-slate-400 font-medium mb-1'>Departure</small>
                     <div className={`w-full font-medium text-blue-950 `}>
-                      <DropDownSearch selectedOption={departureOption} setSelectedOption={setDepartureOption} options={options} setError={setDepartureError} rubbish={rubbish} setRubbish={setRubbish}
+                      <DropDownSearch selectedOption={departureOption} setSelectedOption={setDepartureOption} options={options} setError={setDepartureError}
                       />
                     </div>
                   </div>
@@ -240,9 +243,12 @@ function Flights() {
             </button>
           </div>
         </div>
-        {/* Dynamic search data from server */}
-        <SearchResult searchData={searchData}/>
+        
       </div>
+      <div className='w-full flex flex-col items-center'>
+        <SearchResult />
+      </div>
+      {/* Dynamic search data from server */}
     </>
    )
 }
