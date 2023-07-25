@@ -39,7 +39,7 @@ const router = new express.Router();
  *           format: date
  *           description: The departure date
  *         adults:
- *            type: number
+ *            type: string
  *            description: The passenger number must be equal 1
  */
 
@@ -96,7 +96,7 @@ router.post("/search", flightRateLimiter, searchFlightController);
  *           format: date
  *           description: The departure date
  *         adults:
- *            type: number
+ *            type: string
  *            description: The passenger number must be equal to 1
  */
 
@@ -169,7 +169,7 @@ router.post("/comfirm/:id", auth, flightRateLimiter, comfirmFlightController);
  *           format: date
  *           description: The departure date
  *         adults:
- *           type: number
+ *           type: string
  *           description: The passenger number must be equal to 1
  *         travelerId:
  *           type: number
