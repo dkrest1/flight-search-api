@@ -49,7 +49,7 @@ const router = new express.Router();
  * tags:
  *   name: Flight 
  *   description: The Flight resource endpoint
- * flight/search:
+ * /flight/search:
  *   post:
  *     summary: Search for a flight offers
  *     tags: [Flight]
@@ -106,7 +106,7 @@ router.post("/search", flightRateLimiter, searchFlightController);
  * tags:
  *   name: Flight 
  *   description: The Flight resource endpoint
- * flight/comfirm/{flightOfferId}:
+ * /flight/comfirm/{flightOfferId}:
  *   post:
  *     summary: comfirm flight offer before booking
  *     parameters: 
@@ -204,7 +204,7 @@ router.post("/comfirm/:id", auth, flightRateLimiter, comfirmFlightController);
  * tags:
  *   name: Flight 
  *   description: The Flight resource endpoint
- * flight/book/{flightOfferId}:
+ * /flight/book/{flightOfferId}:
  *   post:
  *     summary: comfirm flight offer before booking
  *     parameters: 
@@ -277,7 +277,7 @@ router.post("/book/:id", auth, bookFlightController);
 /// request response to get all your bookings
 /**
  * @swagger
- * flight/bookings:
+ * /flight/bookings:
  *   get:
  *     summary: get users profile
  *     tags: [Flight]

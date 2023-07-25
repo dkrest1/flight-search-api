@@ -78,7 +78,7 @@ const router = new express.Router()
  * tags:
  *   name: User 
  *   description: The User resource endpoint
- * user/create:
+ * /user/create:
  *   post:
  *     summary: Create a new user
  *     tags: [User]
@@ -122,7 +122,7 @@ router.post("/create", createUser);
 // request response for login user
 /**
  * @swagger
- * user/login:
+ * /user/login:
  *   post:
  *     summary: Login a user
  *     tags: [User]
@@ -147,7 +147,7 @@ router.post("/login", loginUser);
 // request response to get user
 /**
  * @swagger
- * user/me:
+ * /user/me:
  *   get:
  *     summary: get a user profile
  *     tags: [User]
@@ -210,7 +210,7 @@ router.get("/", auth, getUsers)
 // request response to update user
 /**
  * @swagger
- * user/me:
+ * /user/me:
  *   patch:
  *     summary: update a user profile
  *     tags: [User]
@@ -238,7 +238,7 @@ router.patch("/me", auth, updatedUser);
 // request response to update user
 /**
  * @swagger
- * user/me:
+ * /user/me:
  *   delete:
  *     summary: delete a user profile
  *     tags: [User]
