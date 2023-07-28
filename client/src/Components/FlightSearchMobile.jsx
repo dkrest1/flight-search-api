@@ -8,6 +8,9 @@ import { accesstoken } from './redux/tokenSlice'
 import { useSelector } from 'react-redux'
 import axios from 'axios'
 import useFlightStore from './zustand store/ZStore'
+import PulseLoader from 'react-spinners/PulseLoader'
+import {toast, ToastContainer} from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css';
 
 const FlightSearchMobile = () => {
   const {flightData, addFlight} = useFlightStore()
@@ -63,7 +66,8 @@ const FlightSearchMobile = () => {
     }
     return errors
   }
-  
+  const [prompt, setPrompt] = useState(null)
+  const notify = ()=>toast(prompt)
   const handleSearchFlight=(event)=>{
     setIsPending(true)
     event.preventDefault()
@@ -78,9 +82,16 @@ const FlightSearchMobile = () => {
       .then((response)=>{
         console.log(response)
         let data= response.data.data
-        // setSearchData(data)
         addFlight(data)
         localStorage.setItem('flight-data', JSON.stringify(data))
+        if(data.length ===0){
+          setPrompt("No flight reaults for the options selected")
+          notify()
+      }
+      else if(data.length >=1){
+        setPrompt("Successful!")
+        notify()
+      }
         setIsPending(false)
       })
       .catch((error)=>{
@@ -91,7 +102,8 @@ const FlightSearchMobile = () => {
     else{
       setIsPending(false)
       setErrors(validated)
-      console.log("something happened")
+      setPrompt("Error! something happened")
+      notify()
     }
   }
   const setDepartureErorr=()=>{
@@ -149,6 +161,7 @@ const FlightSearchMobile = () => {
   )
   return (
     <div className='w-full mt-6 '>
+      <ToastContainer/>
         <form onSubmit={handleSearchFlight} className='w-full flex flex-col'>
             <select name='class'className='border border-slate-300 rounded p-2'>
                 <option value=''>First class</option>
@@ -197,7 +210,13 @@ const FlightSearchMobile = () => {
                     <small className='text-[10px] text-red-600 ml-1'>{errors.departure_date}</small>
                 }
                 </div>
-            <button className={`text-white bg-blue-950 font-medium text-lg rounded tracking-wider mt-3 py-2 ${isPending && 'bg-slate-700'}`} disabled={isPending}>Search</button>
+            <button className={`text-white bg-blue-950 font-medium text-lg rounded tracking-wider mt-3 py-2 ${isPending && 'bg-slate-700'}`} disabled={isPending}>
+              {
+                  isPending ? <span className=''>searching <PulseLoader color='#ffffff' size={4}/> </span>
+                :
+                <span>Search</span>
+              }
+            </button>
         </form>
         <div>
           {/* {searchResult} */}

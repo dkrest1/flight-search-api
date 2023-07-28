@@ -1,8 +1,10 @@
 import React from 'react'
+import Navbar from '../Navbar'
 
 const Details = () => {
   return (
     <div className='w-full bg-white h-full'>
+        <Navbar/>
         <div className=' grid grid-cols-3 mt-20 gap-20 items-between px-16'>
             <div className=' col-span-2 w- flex flex-col bg-[#fbfeff] pt-2'>
                 <div className='flex flex-row justify-center border-b border-b-slate-300 pb-1 border-slate-400'>

@@ -13,6 +13,9 @@ import { NavLink } from 'react-router-dom'
 import DropDownSearch from './DropDownSearch'
 import SearchResult from './SearchResult'
 import useFlightStore from './zustand store/ZStore'
+import {toast, ToastContainer} from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css';
+import SortResults from './SortResults'
 
 
 function Flights() {
@@ -28,7 +31,9 @@ function Flights() {
   })
   const [isPending, setIsPending] = useState(false)
   const [errors, setErrors] = useState(null) 
-  const [searchData, setSearchData] = useState(null)
+  const [prompt, setPrompt] = useState(null)
+  const [showFilter, setShowFilter] = useState(false)
+  const notify = ()=>toast(prompt)
   useEffect(()=>{
     if(departureOption){
       setSearchInputs((prevValues)=>({...prevValues, origin:departureOption.value}))
@@ -84,20 +89,30 @@ function Flights() {
       .then((response)=>{
         console.log(response)
         let data= response.data.data
-        setSearchData(data)
         addFlight(data)
         localStorage.setItem('flight-data', JSON.stringify(data))
+        if(data.length ===0){
+          setPrompt("No flight reaults for the options selected")
+          console.log("No flight reaults for the options selected")
+          notify()
+      }
+      else if(data.length >=1){
+        setPrompt("Successful!")
+        notify()
+      }
         setIsPending(false)
       })
       .catch((error)=>{
         console.log(error)
+        console.log(error.response.data.flightErr)
         setIsPending(false)
       })
     }
     else{
       setIsPending(false)
       setErrors(validated)
-      console.log("something happened")
+      setPrompt("Error! something happened")
+      notify()
     }
   }
   const setDepartureError=()=>{
@@ -131,15 +146,19 @@ function Flights() {
         </button>
       </div>
     )
+  const handleFilterClick =()=>{
+    setShowFilter(true)
+  }
   
   return (
-    <>
+    <div className='w-[100%]'>
       <Navbar/>
-      <div className='md:hidden p-2'>
+      <ToastContainer/>
+      <div className={`md:hidden p-2 ${showFilter && 'hidden'}`}>
         <FlightSearchMobile/>
       </div>
-      <div className='hidden w-[100%] h-full md:flex flex-col items-center mt-3 bg-white'>
-        <div className='w-[90%] flex flex-col rounded-lg shadow-xl h- pb-10 px-2 mt-10 border-2 '>
+      <div className='hidden w-[100%] md:flex flex-col items-center mt-3 bg-white'>
+        <div className={`w-[90%] flex flex-col rounded-lg shadow-xl h- pb-10 px-2 mt-10 border-2 ${showFilter && 'hidden'}`}>
           <div className='flex flex-row divide-x text-xs rounded border-2 w-fit mt-3 mx-3'>
             {flightClass}
           </div>
@@ -214,42 +233,19 @@ function Flights() {
                 </div>
               </div>
               <div className='flex flex-row items-center w-[10%]'>
-                <button className={`bg-blue-950 w-full mr-2 font-bold text-slate-200 py-4 px-3 rounded-lg ${isPending && 'w-20 px-2'}`}
+                <button className={`bg-blue-950 w-full mr-2 font-bold text-slate-200 py-4 px-3 rounded-lg ${isPending && 'w-20 px-2 bg-gray-600'}`}
                   disabled={isPending}> {!isPending ? <span>SEARCH</span> :<PulseLoader color="#ffffff" size={7}/>}
                 </button> 
-                
               </div>
             </form>
           </div>
         </div>
-        <div className='w-[90%] mt-10 flex flex-row justify-between'>
-          <div className='rounded-lg border-2 shadow'>
-            <select name='sort-by' className='text-base py-1 text-slate-500'>
-              <option value='sort-by' className='text-xs text-red-600'>SORT BY</option>
-              <option value='name'  className=''>name</option>
-              <option value='price'  className=''>price</option>
-              <option value='origin'  className=''>origin</option>
-              <option value='destination'  className=''>Destination</option>
-            </select>
-          </div>
-          <div className='flex flex-row divide-x-2 divide-slate-300'>
-            <button className='mx-1 text-xl text-blue-950'>
-              <FontAwesomeIcon icon={faSort} className= '' />
-            </button>
-            <button className='px-1'>
-              <div className='bg-blue-950 rounded'>
-                <FontAwesomeIcon icon={faFilter} className='pt-2 pb-1 px-1 text-lg text-white' />
-              </div>
-            </button>
-          </div>
-        </div>
-        
+        <SortResults handleFilterClick={handleFilterClick} setShowFilter={setShowFilter}/>
       </div>
-      <div className='w-full flex flex-col items-center'>
-        <SearchResult />
+      <div className='w-[100%] flex flex-col items-center'>
+        <SearchResult showFilter={showFilter} setShowFilter={setShowFilter} />
       </div>
-      {/* Dynamic search data from server */}
-    </>
+    </div>
    )
 }
 

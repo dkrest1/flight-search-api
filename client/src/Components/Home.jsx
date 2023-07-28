@@ -28,7 +28,7 @@ const Home = () => {
   }
 
   return (
-    <div className='w-[full] sm:min-h-screen'>
+    <div className='w-full sm:min-h-screen'>
       <Navbar />
       {/* Larger screen view */}
       <div className='hidden sm:block bg-hero-img bg-cover w-full h-full'>

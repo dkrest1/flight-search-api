@@ -12,6 +12,7 @@ import { useEffect } from 'react';
 import { accesstoken } from './Components/redux/tokenSlice';
 import { user } from './Components/redux/userSlice';
 import { useSelector } from 'react-redux';
+import FlightInfo from './Components/FlightInfo';
 
 function App() {
   const token = useSelector(accesstoken)
@@ -28,19 +29,20 @@ function App() {
   //   }, [location]);
   // // };
   return (
-   <div className='h-screen w-full box-content flex flex-col bg-cover bg-no-repeat'>
-    <BrowserRouter>
-      <Routes>
-        <Route exact path='/' element={<Home/>}/>
-        <Route exact path='/flights' element={<Flights/>}/>
-        <Route exact path='/bookings' element={<Bookings/>}/>
-        <Route exact path='/contact' element={<Contact/>}/>
-        <Route exact path='/details' element={<Details/>}/>
-        <Route exact path='/login' element={<Login/>}/>
-        <Route exact path='/signup' element={<Signup/>}/>
-      </Routes>
-    </BrowserRouter>
-   </div>
+    <div className="h-screen w-full box-content flex flex-col ">
+      <BrowserRouter>
+        <Routes>
+          <Route exact path="/" element={<Home />} />
+          <Route exact path="/flights" element={<Flights />} />
+          <Route exact path="/bookings" element={<Bookings />} />
+          <Route exact path="/contact" element={<Contact />} />
+          <Route exact path="/details/:id" element={<Details />} />
+          <Route exact path="/login" element={<Login />} />
+          <Route exact path="/signup" element={<Signup />} />
+          <Route exact path="/flight-info/:id" element={<FlightInfo />} />
+        </Routes>
+      </BrowserRouter>
+    </div>
   );
 }
 
