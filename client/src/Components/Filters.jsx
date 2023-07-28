@@ -5,10 +5,10 @@ import useFlightStore from "./zustand store/ZStore";
 
 const Filters = ({ setShowFilter, setFilteredResult, filteredResult }) => {
   const { flightData } = useFlightStore();
-  const maxPrice = flightData && flightData.reduce((max, curr) => {
+  const maxPrice = flightData.length > 0 && flightData.reduce((max, curr) => {
     return curr.price > max ? Number(curr.price) : Number(max);
   }, flightData[0].price);
-  const minPrice =  flightData && flightData.reduce((min, curr) => {
+  const minPrice =  flightData.length > 0 && flightData.reduce((min, curr) => {
     return curr.price < min ? Number(curr.price) : Number(min);
   }, flightData[0].price);
 

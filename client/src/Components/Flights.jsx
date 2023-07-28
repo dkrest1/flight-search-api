@@ -93,7 +93,7 @@ function Flights() {
         localStorage.setItem('flight-data', JSON.stringify(data))
         if(data.length ===0){
           setPrompt("No flight reaults for the options selected")
-          console.log("No flight reaults for the options selected")
+          alert("No flight reaults for the options selected")
           notify()
       }
       else if(data.length >=1){
