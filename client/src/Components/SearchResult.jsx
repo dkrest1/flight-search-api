@@ -8,14 +8,17 @@ import "react-toastify/dist/ReactToastify.css";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Filters from "./Filters";
-import airlineImg from '../Assets/airline.jpg'
+import airlineImg from "../Assets/airline.jpg";
 
-const SearchResult = ({showFilter, setShowFilter}) => {
-  const { flightData, removeFlight, sortedData } = useFlightStore();
+const SearchResult = ({
+  showFilter,
+  setShowFilter,
+}) => {
+  const { flightData, removeFlight, filteredResult, getFiltered, showResult, getResult } = useFlightStore();
   let searchData = flightData;
   const navigateTo = useNavigate();
-  const [filterDetails, setFilterDetails] = useState({})
-  const [filteredResult, setFilteredResult] = useState([])
+  const [filterDetails, setFilterDetails] = useState({});
+  //   const [filteredResult, setFilteredResult] = useState([])
   const handleClearSearch = () => {
     localStorage.removeItem("flight-data");
     removeFlight();
@@ -99,16 +102,20 @@ const SearchResult = ({showFilter, setShowFilter}) => {
       ? filteredResult.map((value) => (
           <DisplayResult value={value} key={value.id} />
         ))
-      : searchData &&
-        searchData.length !== 0 &&
-        searchData.map((value) => (
+      : showResult &&
+        showResult.length !== 0 &&
+        showResult.map((value) => (
           <DisplayResult value={value} key={value.id} />
         ));
   return (
     <>
       {searchData && searchData.length !== 0 ? (
         <>
-          <div className={`w-full flex flex-col items-center ${showFilter && "hidden"}`}>
+          <div
+            className={`w-full flex flex-col items-center ${
+              showFilter && "hidden"
+            }`}
+          >
             {searchResult}
             {/* Pagination */}
             <>
@@ -135,8 +142,12 @@ const SearchResult = ({showFilter, setShowFilter}) => {
       ) : (
         <p className="text-gray-400 mt-5">Search for flight details</p>
       )}
-      <div className={`w-full ${!showFilter && 'hidden'}`}>
-        <Filters setShowFilter={setShowFilter} filterDetails={filterDetails} setFilterDetails={setFilterDetails} setFilteredResult={setFilteredResult} filteredResult={filteredResult} />
+      <div className={`w-full ${!showFilter && "hidden"}`}>
+        <Filters
+          setShowFilter={setShowFilter}
+          filterDetails={filterDetails}
+          setFilterDetails={setFilterDetails}
+        />
       </div>
     </>
   );

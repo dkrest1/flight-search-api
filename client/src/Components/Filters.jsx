@@ -3,31 +3,31 @@ import { useState } from "react";
 import Navbar from "../Navbar";
 import useFlightStore from "./zustand store/ZStore";
 
-const Filters = ({ setShowFilter, setFilteredResult, filteredResult }) => {
-  const { flightData } = useFlightStore();
-  const maxPrice = flightData.length > 0 && flightData.reduce((max, curr) => {
-    return curr.price > max ? Number(curr.price) : Number(max);
-  }, flightData[0].price);
-  const minPrice =  flightData.length > 0 && flightData.reduce((min, curr) => {
-    return curr.price < min ? Number(curr.price) : Number(min);
-  }, flightData[0].price);
+const Filters = ({ setShowFilter, }) => {
+  const { flightData, filteredResult, getFiltered, removeFiltered } = useFlightStore();
+  const maxPrice =
+    flightData.length > 0 &&
+    flightData.reduce((max, curr) => {
+      return curr.price > max ? parseFloat(curr.price) + 1 : parseFloat(max) - 1 ;
+    }, flightData[0].price);
+  const minPrice =
+    flightData.length > 0 &&
+    flightData.reduce((min, curr) => {
+      return curr.price < min ? parseFloat(curr.price) : parseFloat(min);
+    }, flightData[0].price);
 
-  const [minRangeValue, setMinRangeValue] = useState(minPrice || '');
-  const [maxRangeValue, setMaxRangeValue] = useState(maxPrice || '');
+  const [minRangeValue, setMinRangeValue] = useState(minPrice || "");
+  const [maxRangeValue, setMaxRangeValue] = useState(maxPrice + 1 || "");
   const [searchAirline, setSearchAirline] = useState("");
   const [checkedAirlines, setCheckedAirlines] = useState([]);
   const [alertText, setAlertText] = useState("");
-
   const handleMinRangeChange = () => {
-    const newMinValue = Math.min(
-      Number(event.target.value).toFixed(2),
-      maxRangeValue
-    );
-    setMinRangeValue(newMinValue.toFixed(2));
+    const newMinValue = Math.min(Number(event.target.value), maxRangeValue);
+    setMinRangeValue(newMinValue);
   };
   const handleMaxRangeChange = () => {
-    const newMaxValue = Math.max(Number(event.target.value), minRangeValue);
-    setMaxRangeValue(newMaxValue.toFixed(2));
+    const newMaxValue = Math.max(parseFloat(event.target.value), minRangeValue);
+    setMaxRangeValue(newMaxValue);
   };
   const onSearchAirlineChange = () => {
     setSearchAirline(event.target.value);
@@ -40,27 +40,30 @@ const Filters = ({ setShowFilter, setFilteredResult, filteredResult }) => {
         : prevChecked.filter((item) => item !== name)
     );
   };
-  const isChecked = (airline) => checkedAirlines && checkedAirlines.includes(airline);
+  const isChecked = (airline) =>
+    checkedAirlines && checkedAirlines.includes(airline);
   const removeDuplicates = (arr, key) => {
-  if (flightData) {
-    const seen = new Set();
-    return arr.filter((item) => {
-      const value = item[key];
-      if (!seen.has(value)) {
-        seen.add(value);
-        return true;
-      }
-      return false;
-    });
+    if (flightData) {
+      const seen = new Set();
+      return arr.filter((item) => {
+        const value = item[key];
+        if (!seen.has(value)) {
+          seen.add(value);
+          return true;
+        }
+        return false;
+      });
+    }
   };
-}
   const newAirlineArray = removeDuplicates(flightData, "airline");
-  const filteredAirlines = newAirlineArray && newAirlineArray.filter((obj) => {
-    return obj.airline.toLowerCase().includes(searchAirline.toLowerCase());
-  });
+  const filteredAirlines =
+    newAirlineArray &&
+    newAirlineArray.filter((obj) => {
+      return obj.airline.toLowerCase().includes(searchAirline.toLowerCase());
+    });
   const handleApplyFilters = () => {
     let priceResult = flightData.filter((obj) => {
-      if (minRangeValue && maxRangeValue) {
+      if (minRangeValue && maxRangeValue) {;
         return obj.price >= minRangeValue && obj.price <= maxRangeValue;
       }
     });
@@ -73,23 +76,31 @@ const Filters = ({ setShowFilter, setFilteredResult, filteredResult }) => {
           );
         }
       });
-    if (minRangeValue && maxRangeValue && checkedAirlines.length > 0) {
-        console.log(combinedResult)
-      setFilteredResult(combinedResult);
+    if (minRangeValue && maxRangeValue && checkedAirlines.length >= 1) {
+      console.log(combinedResult);
+      console.log(checkedAirlines.length);
+      getFiltered(combinedResult);
     } else if (checkedAirlines.length === 0) {
-      setFilteredResult(priceResult);
+      getFiltered(priceResult);
     }
-    if(filteredResult.length < 1){
-        alert("No match found! Please try again.")
+    if (
+      checkedAirlines &&
+      checkedAirlines.length >= 1 &&
+      filteredResult &&
+      filteredResult.length === 0
+    ) {
+      alert("No match found! Showing all search results");
+    } else if (filteredResult && filteredResult.length < 0) {
+      alert("No match found! Showing all search results");
     }
     setShowFilter(false);
   };
   const handleResetAllFilters = () => {
     alert("All Filters has been reset");
-    setMinRangeValue(minPrice)
-    setMaxRangeValue(maxPrice)
-    setCheckedAirlines([])
-    setFilteredResult(null)
+    setMinRangeValue(minPrice);
+    setMaxRangeValue(maxPrice);
+    setCheckedAirlines([]);
+    removeFiltered(null);
   };
   const handleCancleFliters = () => {
     setAlertText(
@@ -127,9 +138,9 @@ const Filters = ({ setShowFilter, setFilteredResult, filteredResult }) => {
           </button>
           <button
             className="text-blue-600 hover:font-bold"
-            onClick={() =>{
-                setShowFilter(false)
-                setAlertText("")
+            onClick={() => {
+              setShowFilter(false);
+              setAlertText("");
             }}
           >
             Yes
@@ -156,7 +167,8 @@ const Filters = ({ setShowFilter, setFilteredResult, filteredResult }) => {
       <div className="w-full flex flex-col px-3 ">
         <div className="w-full h-24 flex flex-row justify-between mt-5 items-center border-b-2 border-gray-500">
           <p>
-            {flightData && flightData.length} of {flightData && flightData.length}
+            {flightData && flightData.length} of{" "}
+            {flightData && flightData.length}
           </p>
           <div className="flex flex-row gap-4">
             <button onClick={handleResetAllFilters}>Reset All filters</button>
@@ -190,6 +202,7 @@ const Filters = ({ setShowFilter, setFilteredResult, filteredResult }) => {
                   type="range"
                   min={minPrice}
                   max={maxPrice}
+                  step='0.1'
                   onChange={handleMinRangeChange}
                   value={minRangeValue}
                   className="range w-1/2 rounded-l "
@@ -198,6 +211,7 @@ const Filters = ({ setShowFilter, setFilteredResult, filteredResult }) => {
                   type="range"
                   min={minRangeValue}
                   max={maxPrice}
+                  step='0.1'
                   onChange={handleMaxRangeChange}
                   value={maxRangeValue}
                   className="range w-1/2  rounded-r"
@@ -234,8 +248,7 @@ const Filters = ({ setShowFilter, setFilteredResult, filteredResult }) => {
                         <div className="flex flex-row gap-x-10">
                           <p className="font-medium">${value.price}</p>
                           <div className="w-6 h-6 rounded-full border border-gray-200">
-                            <p className="text-center">
-                              {value.numberOfBookableSeats}
+                            <p className="text-center"> {flightData.filter((obj)=>obj.airline === value.airline).length}
                             </p>
                           </div>
                         </div>
