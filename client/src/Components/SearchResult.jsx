@@ -27,12 +27,13 @@ const SearchResult = ({showFilter, setShowFilter}) => {
     return (
       <div key={value.id} className="w-[98%] mt-3 ">
         <div className="w-full h-32 flex flex-row rounded-lg divide-2 border-2 shadow-sm h-ful">
-          <div className="hidde w-[14%] md:flex flex-row justify-center items-center border-r border-slate-300 py-1">
+          <div className="hidde w-[14%] md:flex flex-col justify-center items-center border-r border-slate-300 py-1">
             <img
               src={airlineImg}
               alt={value.airline + " airline image"}
               className=" h-full object-contain"
-            />{value.airline}
+            />
+            <span>{value.airline} Airline</span>
           </div>
           <div className="w-[43%] flex flex-row border-dashed border-r border-slate-300 h-full items-center justify-center px-2 md:gap-10 py-2 md:py-7">
             <div className="flex flex-col items-center md:gap-2 ">

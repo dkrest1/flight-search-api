@@ -104,6 +104,7 @@ function Flights() {
       })
       .catch((error)=>{
         console.log(error)
+        console.log(error.response.data.flightErr)
         setIsPending(false)
       })
     }

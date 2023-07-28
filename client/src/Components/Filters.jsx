@@ -5,15 +5,15 @@ import useFlightStore from "./zustand store/ZStore";
 
 const Filters = ({ setShowFilter, setFilteredResult, filteredResult }) => {
   const { flightData } = useFlightStore();
-  const maxPrice = flightData.reduce((max, curr) => {
+  const maxPrice = flightData && flightData.reduce((max, curr) => {
     return curr.price > max ? Number(curr.price) : Number(max);
   }, flightData[0].price);
-  const minPrice = flightData.reduce((min, curr) => {
+  const minPrice =  flightData && flightData.reduce((min, curr) => {
     return curr.price < min ? Number(curr.price) : Number(min);
   }, flightData[0].price);
 
-  const [minRangeValue, setMinRangeValue] = useState(minPrice);
-  const [maxRangeValue, setMaxRangeValue] = useState(maxPrice);
+  const [minRangeValue, setMinRangeValue] = useState(minPrice || '');
+  const [maxRangeValue, setMaxRangeValue] = useState(maxPrice || '');
   const [searchAirline, setSearchAirline] = useState("");
   const [checkedAirlines, setCheckedAirlines] = useState([]);
   const [alertText, setAlertText] = useState("");
@@ -42,6 +42,7 @@ const Filters = ({ setShowFilter, setFilteredResult, filteredResult }) => {
   };
   const isChecked = (airline) => checkedAirlines && checkedAirlines.includes(airline);
   const removeDuplicates = (arr, key) => {
+  if (flightData) {
     const seen = new Set();
     return arr.filter((item) => {
       const value = item[key];
@@ -52,8 +53,9 @@ const Filters = ({ setShowFilter, setFilteredResult, filteredResult }) => {
       return false;
     });
   };
+}
   const newAirlineArray = removeDuplicates(flightData, "airline");
-  const filteredAirlines = newAirlineArray.filter((obj) => {
+  const filteredAirlines = newAirlineArray && newAirlineArray.filter((obj) => {
     return obj.airline.toLowerCase().includes(searchAirline.toLowerCase());
   });
   const handleApplyFilters = () => {
@@ -154,7 +156,7 @@ const Filters = ({ setShowFilter, setFilteredResult, filteredResult }) => {
       <div className="w-full flex flex-col px-3 ">
         <div className="w-full h-24 flex flex-row justify-between mt-5 items-center border-b-2 border-gray-500">
           <p>
-            {flightData.length} of {flightData.length}
+            {flightData && flightData.length} of {flightData && flightData.length}
           </p>
           <div className="flex flex-row gap-4">
             <button onClick={handleResetAllFilters}>Reset All filters</button>
