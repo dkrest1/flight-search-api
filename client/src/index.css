@@ -21,3 +21,45 @@
         @apply w-[100%]
     }
 }
+
+.range{
+    -webkit-appearance: none;
+    appearance: none;
+    height: 8px;
+    background-color: rgb(23, 27, 255);
+    /* Grey background */
+    outline: none;
+    /* Remove outline */
+    opacity: 0.7;
+    /* Set transparency (for mouse-over effects on hover) */
+    -webkit-transition: .2s;
+    /* 0.2 seconds transition on hover */
+    transition: opacity .2s;
+}
+
+.range::-webkit-slider-thumb {
+    /* -webkit-appearance: none; */
+    /* Override default look */
+    appearance: none;
+    width: 20px;
+    /* Set a specific slider handle width */
+    height: 20px;
+    /* Slider handle height */
+    background: #ffff;
+    border-radius: 100%;
+    border: solid 1px rgb(218, 218, 218);
+    /* Green background */
+    cursor: pointer;
+    /* Cursor on hover */
+}
+
+.range::-moz-range-thumb {
+    /* width: 25px;
+    height: 25px; */
+    background: #04AA6D;
+    cursor: pointer;
+}
+
+.filter-overlay{
+    background-color: rgba(241, 245, 249, 0.541);;
+}
