@@ -13,6 +13,7 @@ import { accesstoken } from './Components/redux/tokenSlice';
 import { user } from './Components/redux/userSlice';
 import { useSelector } from 'react-redux';
 import FlightInfo from './Components/FlightInfo';
+import Booked from './Components/Booked';
 
 function App() {
   const token = useSelector(accesstoken)
@@ -40,6 +41,7 @@ function App() {
           <Route exact path="/login" element={<Login />} />
           <Route exact path="/signup" element={<Signup />} />
           <Route exact path="/flight-info/:id" element={<FlightInfo />} />
+          <Route exact path='/booked' element={<Booked/>}/>
         </Routes>
       </BrowserRouter>
     </div>

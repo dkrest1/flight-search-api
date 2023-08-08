@@ -9,22 +9,45 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Filters from "./Filters";
 import airlineImg from "../Assets/airline.jpg";
+import axios from "axios";
+import { useSelector } from "react-redux";
+import { accesstoken } from "./redux/tokenSlice";
 
-const SearchResult = ({
-  showFilter,
-  setShowFilter,
-}) => {
-  const { flightData, removeFlight, filteredResult, getFiltered, showResult, getResult } = useFlightStore();
+const SearchResult = ({showFilter, setShowFilter,}) => {
+  const token = useSelector(accesstoken)
+  const { flightData, removeFlight, filteredResult, getFiltered, showResult, getResult, passengers } = useFlightStore();
   let searchData = flightData;
   const navigateTo = useNavigate();
   const [filterDetails, setFilterDetails] = useState({});
-  //   const [filteredResult, setFilteredResult] = useState([])
+  // let confirmOffer = {};
+  // console.log(confirmOffer)
+  useEffect(()=>{
+    getResult(flightData)
+  },[flightData])
   const handleClearSearch = () => {
     localStorage.removeItem("flight-data");
     removeFlight();
   };
   const handleBookFlight = (id) => {
-    navigateTo(`/flight-info/${id}`);
+    let confirmOffer={
+      origin: flightData[id].departure.iataCode,
+      destination: flightData[id].arrival.iataCode,
+      departure_date: flightData[id].departure.at.substring(0, 10),
+      adults: passengers
+    }
+    console.log('loading...')
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      "content-type": "application/json",
+    };
+    axios.post(`https://flight-search-api.onrender.com/flight/confirm/${id}`, confirmOffer, {headers})
+    .then((response)=>{
+      console.log(response)
+    })
+    .catch((error)=>{
+      console.log(error)
+    })
+    // navigateTo(`/flight-info/${id}`);
   };
   const DisplayResult = ({ value }) => {
     return (
@@ -36,7 +59,7 @@ const SearchResult = ({
               alt={value.airline + " airline image"}
               className=" h-full object-contain"
             />
-            <span>{value.airline} Airline</span>
+            <span className=" max-sm:hidden">{value.airline} Airline</span>
           </div>
           <div className="w-[43%] flex flex-row border-dashed border-r border-slate-300 h-full items-center justify-center px-2 md:gap-10 py-2 md:py-7">
             <div className="flex flex-col items-center md:gap-2 ">

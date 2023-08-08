@@ -68,6 +68,9 @@ const FlightSearchMobile = () => {
   }
   const [prompt, setPrompt] = useState(null)
   const notify = ()=>toast(prompt)
+  useEffect(()=>{
+    notify(prompt)
+  },[prompt])
   const handleSearchFlight=(event)=>{
     setIsPending(true)
     event.preventDefault()
@@ -86,24 +89,23 @@ const FlightSearchMobile = () => {
         localStorage.setItem('flight-data', JSON.stringify(data))
         if(data.length ===0){
           setPrompt("No flight reaults for the options selected")
-          notify()
       }
       else if(data.length >=1){
-        setPrompt("Successful!")
-        notify()
+        setPrompt("Successful!") 
       }
         setIsPending(false)
       })
       .catch((error)=>{
         console.log(error)
         setIsPending(false)
+      setPrompt("Error! something happened");
+
       })
     }
     else{
       setIsPending(false)
       setErrors(validated)
-      setPrompt("Error! something happened")
-      notify()
+      setPrompt("Error! please check inputs again")
     }
   }
   const setDepartureErorr=()=>{

@@ -48,7 +48,7 @@ const Home = () => {
         </div>
       </div>
       {/* Mobile screen view */}
-      <div className='w-full p-2 bg-white sm:hidden'>
+      <div className='w-full p-2 bg-white mt-8 sm:hidden'>
         <div className='flex flex-col '>
           <h3 className='text-lg text-blue-950 font-bold'>Welcome,</h3>
           <p>It's a big world out there, book your flight tickets easily and explore your dream destinations</p>
