@@ -20,7 +20,7 @@ import SortResults from './SortResults'
 
 function Flights() {
   const token = useSelector(accesstoken)
-  const {flightData, addFlight} = useFlightStore()
+  const {flightData, addFlight, passengers, getPassengers} = useFlightStore()
   const [departureOption, setDepartureOption] = useState(null)
   const [arrivalOption, setArrivalOption] = useState(null)
   const [searchInputs, setSearchInputs] = useState({
@@ -77,6 +77,8 @@ function Flights() {
   const handleSearchFlight=(event)=>{
     setIsPending(true)
     event.preventDefault()
+    localStorage.setItem("passengers", searchInputs.adults);
+    getPassengers(Number(searchInputs.adults))
     const validated = verifyInputs()
     console.log(validated)
     console.log(searchInputs)

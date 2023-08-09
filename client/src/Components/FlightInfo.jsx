@@ -3,18 +3,20 @@ import { useNavigate, useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlane } from "@fortawesome/free-solid-svg-icons";
 import useFlightStore from "./zustand store/ZStore";
+import { useState } from 'react';
 
 const FlightInfo = () => {
   const { id } = useParams();
-  const { flightData, removeFlight, sortedData } = useFlightStore();
+  const { flightData, removeFlight, sortedData, passengers, bookedFlight, getBookedFlight } = useFlightStore();
   const navigateTo = useNavigate()
   const flightInfo = flightData.filter((value) => {
     if (id === value.id) {
+      localStorage.setItem('booked-flight', JSON.stringify(value))
       return value;
     }
   });
-  console.log(flightInfo)
   const handleContinueToDetails =(id)=>{
+    getBookedFlight(flightInfo[0])
     navigateTo(`/details/{id}`)
   }
   const showFlightInfo = flightInfo ? (
@@ -47,7 +49,7 @@ const FlightInfo = () => {
         </div>
         <div className="h-12 flex flex-row justify-between items-center font-semibold border-y">
           <p className="px-2">Passenger(s)</p>
-          <p className="px-2"> 2</p>
+          <p className="px-2"> {passengers}</p>
         </div>
         <div className="h-12 flex flex-row items-center font-semibold border-y">
           <p className="px-2">Luggage: 20kg + 15kg</p>
@@ -68,7 +70,7 @@ const FlightInfo = () => {
   return (
     <div className="w-full bg-white h-full">
       <Navbar/>
-      <div className=" grid grid-cols-3 mt-20 gap-20 items-between px-16">
+      <div className="w-full grid grid-cols-1 sm:grid-cols-3 mt-5 sm:mt-20 sm:gap-20 gap-y-10 items-between px-2 sm:px-16">
         {showFlightInfo}
         <div className="w-full">
           <div className="w-full flex flex-col rounded-lg border-2  ">
@@ -77,7 +79,7 @@ const FlightInfo = () => {
             </h5>
             <div className="flex flex-row justify-between border-b py-3">
               <p className="px-2 ml-3">Fare</p>
-              <p className="px-2">$1500</p>
+              <p className="px-2">${flightInfo[0].price}</p>
             </div>
             <div className="flex flex-row justify-between border-b py-3">
               <p className="px-2 ml-3">Tax</p>
