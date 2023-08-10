@@ -3,38 +3,25 @@ import { faPlane } from '@fortawesome/free-solid-svg-icons'
 import React from 'react'
 import Navbar from '../Navbar'
 import useFlightStore from './zustand store/ZStore'
-import axios from 'axios'
-import { useSelector } from 'react-redux'
-import { accesstoken } from './redux/tokenSlice'
 
 const Bookings = () => {
   const {allBookings} = useFlightStore()
-  const token = useSelector(accesstoken)
-  console.log(allBookings)
-  const getBookings = ()=>{
-    const headers = {
-      Authorization: `Bearer ${token}`,
-      "content-type": "application/json",
-    };
-    axios.get("https://flight-search-api.onrender.com/flight/bookings", {headers})
-    .then((response)=>{
-      console.log(response)
-    })
-    .catch((error)=>{
-      console.log(error)
-    })
-  }
-
+  
   return (
     <>
       <Navbar />
-      <div className="h-full bg-white flex flex-col px-10">
-        <button onClick={getBookings}>Get Bookings</button>
-        <div className="mt-10 flex flex-row w-full gap-10">
-          {!allBookings &&
-            allBookings.map((booking) => {
-              <div className="flex flex-col w-[50%] rounded-lg border-2 border-red-100 pb-5">
-                <div className="flex flex-row w-[full] border-dashed border-b-2 justify-between items-center px-2 bg-red-600 rounded  py-2">
+      <div className="h-full bg-white flex flex-col mt-14 px-2">
+        <h2 className="font-bold sm:text-xl">
+          ALL BOOKINGS ({allBookings && allBookings.length})
+        </h2>
+        <div className="w-full mt-4 grid grid-cols-1 place-items-center sm:grid-cols-2 sm:gap-x-5 gap-y-10">
+          {allBookings &&
+            allBookings.map((booking, index) => (
+              <div
+                key={index}
+                className="flex flex-col w-[95%] rounded-lg border-2 border-red-100 pb-5"
+              >
+                <div className="flex flex-row w-full border-dashed border-b-2 justify-between items-center px-2 bg-red-600 rounded  py-2">
                   <div className="flex flex-col justify-center rounded-sm bg-white">
                     <div className="flex flex-col justify-center h-8 w-8 rounded-full bg-red-600">
                       <p className="text-[9px] text-slate-200 italic text-center">
@@ -47,50 +34,59 @@ const Bookings = () => {
                     className="text-lg text-white"
                   />
                 </div>
-                <div className="flex flex-col mt-3 px-4">
-                  <div className=" flex flex-row justify-between mr-10">
-                    <div className="flex flex-col">
+                <div className="relative w-full flex flex-col mt-3 px-4">
+                  <div className="w-full flex flex-row justify-between mr-10">
+                    <div className="w-full flex flex-col">
                       <h5 className="text-base font-medium">Name</h5>
                       <p className="text-base">
-                        {" "}
-                        {booking.sex} {booking.firstName} {booking.lastName}Mr
-                        John Doe
+                        {booking.passengerData.sex}{" "}
+                        {booking.passengerData.firstName}{" "}
+                        {booking.passengerData.lastName}
                       </p>
                     </div>
-                    <div>
-                      <h1 className="font-bold text-4xl text-red-600 text-opacity-20 tracking-widest">
+                    <div className="w-full flex flex-row`">
+                      <h1 className="font-bold text-xl md:text-2xl text-red-600 text-opacity-10 tracking-wide">
                         FIRST CLASS
                       </h1>
                     </div>
                   </div>
 
-                  <div>
-                    <div className=" grid grid-cols-3 font-medium text-base mt-3">
-                      <h5>From</h5>
+                  <div className="w-full">
+                    <div className="w-full grid grid-cols-3 font-medium text-base mt-3">
+                      <h5 className="">From</h5>
                       <h5>Date</h5>
-                      <h5>Carrier</h5>
+                      <h5 className="text-center">Carrier</h5>
                     </div>
-                    <div className="grid grid-cols-3  text-base">
-                      <p>Lagos, Nigeria{booking && booking.depature.iataCode}</p>
-                      <p>22/06/23 {booking && booking.depature.at.subString(0, 10)}</p>
-                      <p>D7 {booking.airline}</p>
+                    <div className="w-full grid grid-cols-3 text-base">
+                      <p>{booking && booking.flightInfo.departure.iataCode}</p>
+                      <p>
+                        {booking &&
+                          booking.flightInfo.departure.at.substring(0, 10)}
+                      </p>
+                      <p className="text-center">
+                        {booking.flightInfo.airline}
+                      </p>
                     </div>
                   </div>
                   <div>
                     <div className=" grid grid-cols-3 font-medium text-base mt-3">
                       <h5>To</h5>
-                      <h5>Time</h5>
-                      <h5>Carrier</h5>
+                      <h5 className="">Time</h5>
+                      <h5 className="text-center">Carrier</h5>
                     </div>
                     <div className="grid grid-cols-3  text-base">
-                      <p>Lagos, Nigeria{booking.arrival.iataCode}</p>
-                      <p>22/06/23 {booking.arrival.at.subString(0, 10)}</p>
-                      <p>D7 {booking.airline}</p>
+                      <p>{booking.flightInfo.arrival.iataCode}</p>
+                      <p className="">
+                        {booking.flightInfo.arrival.at.substring(0, 10)}
+                      </p>
+                      <p className="text-center">
+                        {booking.flightInfo.airline}
+                      </p>
                     </div>
                   </div>
                 </div>
-              </div>;
-            })}
+              </div>
+            ))}
         </div>
       </div>
     </>

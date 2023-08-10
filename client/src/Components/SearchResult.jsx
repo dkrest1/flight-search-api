@@ -3,51 +3,26 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlane, faUser } from "@fortawesome/free-solid-svg-icons";
 import useFlightStore from "./zustand store/ZStore";
 import { useState } from "react";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Filters from "./Filters";
 import airlineImg from "../Assets/airline.jpg";
-import axios from "axios";
-import { useSelector } from "react-redux";
-import { accesstoken } from "./redux/tokenSlice";
 
-const SearchResult = ({showFilter, setShowFilter,}) => {
-  const token = useSelector(accesstoken)
-  const { flightData, removeFlight, filteredResult, getFiltered, showResult, getResult, passengers } = useFlightStore();
+const SearchResult = ({ showFilter, setShowFilter }) => {
+  const { flightData, removeFlight, filteredResult, showResult, getResult } =
+    useFlightStore();
   let searchData = flightData;
   const navigateTo = useNavigate();
   const [filterDetails, setFilterDetails] = useState({});
-  // let confirmOffer = {};
-  // console.log(confirmOffer)
-  useEffect(()=>{
-    getResult(flightData)
-  },[flightData])
+  useEffect(() => {
+    getResult(flightData);
+  }, [flightData]);
   const handleClearSearch = () => {
     localStorage.removeItem("flight-data");
     removeFlight();
   };
   const handleBookFlight = (id) => {
-    let confirmOffer={
-      origin: flightData[id].departure.iataCode,
-      destination: flightData[id].arrival.iataCode,
-      departure_date: flightData[id].departure.at.substring(0, 10),
-      adults: passengers
-    }
-    console.log('loading...')
-    const headers = {
-      Authorization: `Bearer ${token}`,
-      "content-type": "application/json",
-    };
-    axios.post(`https://flight-search-api.onrender.com/flight/confirm/${id}`, confirmOffer, {headers})
-    .then((response)=>{
-      console.log(response)
-    })
-    .catch((error)=>{
-      console.log(error)
-    })
-    // navigateTo(`/flight-info/${id}`);
+    navigateTo(`/flight-info/${id}`);
   };
   const DisplayResult = ({ value }) => {
     return (
@@ -142,7 +117,7 @@ const SearchResult = ({showFilter, setShowFilter,}) => {
             {searchResult}
             {/* Pagination */}
             <>
-              <div className="flex flex-row mt-6 gap-3 font-medium">
+              {/* <div className="flex flex-row mt-6 gap-3 font-medium">
                 <button className="bg-gray-300 text-xs md:text-base px-3 py-1 rounded hover:bg-blue-950 hover:text-white">
                   PREV
                 </button>
@@ -150,7 +125,7 @@ const SearchResult = ({showFilter, setShowFilter,}) => {
                 <button className="border-2 rounded px-3 text-xs md:text-base py-1 border-gray-300 hover:border-none hover:bg-blue-950 hover:text-white">
                   NEXT
                 </button>
-              </div>
+              </div> */}
               <div>
                 <button
                   className="mt-5 text-sm md:text-base"

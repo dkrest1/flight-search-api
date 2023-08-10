@@ -43,6 +43,9 @@ function Flights() {
       setSearchInputs((prevValues)=>({...prevValues, destination: arrivalOption.value}))}
     // console.log(departureOption, arrivalOption)
   },[departureOption, arrivalOption])
+  useEffect(()=>{
+    notify(prompt)
+  },[prompt])
   const options = airports.map((item)=>({
     value: item.code,
     label: `${item.city} - ${item.code} `,
@@ -96,12 +99,9 @@ function Flights() {
         localStorage.setItem('flight-data', JSON.stringify(data))
         if(data.length ===0){
           setPrompt("No flight reaults for the options selected")
-          alert("No flight reaults for the options selected")
-          notify()
       }
       else if(data.length >=1){
-        setPrompt("Successful!")
-        notify()
+        setPrompt("Successful! Showing results...")
       }
         setIsPending(false)
       })
@@ -109,13 +109,13 @@ function Flights() {
         console.log(error)
         console.log(error.response.data.flightErr)
         setIsPending(false)
+        setPrompt(error.response.data,flightErr)
       })
     }
     else{
       setIsPending(false)
       setErrors(validated)
       setPrompt("Error! something happened")
-      notify()
     }
   }
   const setDepartureError=()=>{
@@ -270,6 +270,8 @@ function Flights() {
                       type="number"
                       name="adults"
                       value={searchInputs.adults}
+                      min={1}
+                      max={9}
                       onChange={onInputChange}
                       className="text-sm font-medium text-blue-950 mx-1 focus:outline-none"
                     />
@@ -300,10 +302,7 @@ function Flights() {
         />
       </div>
       <div className="w-[100%] flex flex-col items-center">
-        <SearchResult
-          showFilter={showFilter}
-          setShowFilter={setShowFilter}
-        />
+        <SearchResult showFilter={showFilter} setShowFilter={setShowFilter} />
       </div>
     </div>
   );

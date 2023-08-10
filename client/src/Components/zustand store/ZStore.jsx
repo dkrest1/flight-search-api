@@ -1,4 +1,4 @@
-import {create} from 'zustand'
+import { create } from "zustand";
 
 const useFlightStore = create((set) => ({
   flightData: JSON.parse(localStorage.getItem("flight-data")) || null,
@@ -8,9 +8,18 @@ const useFlightStore = create((set) => ({
   filteredResult: null,
   bookedFlight: JSON.parse(localStorage.getItem("booked-flight")) || null,
   allBookings: JSON.parse(localStorage.getItem("all-bookings")) || [],
+  isLoggedIn: false,
+  getIsLoggedIn: (login) => set((state) => ({ isLoggedIn: login })),
   getBookedFlight: (booked) => set((state) => ({ bookedFlight: booked })),
-  getAllBookings: (bookings) => set((state) => ({ allBookings: [...state.allBookings, bookings] })),
-  getPassengersInfo: (info) => set((state) => ({ passengersInfo: [...state.passengersInfo, info] })),
+  getAllBookings: (bookings) =>
+    set((state) =>
+      state.allBookings
+        ? { allBookings: [...state.allBookings, bookings] }
+        : { allBookings: [bookings] }
+    ),
+  removeAllBookings: () => set((state) => ({ allBookings: null })),
+  getPassengersInfo: (info) =>
+    set((state) => ({ passengersInfo: [...state.passengersInfo, info] })),
   removePassengersInfo: () => set((state) => ({ passengersInfo: null })),
   getPassengers: (number) => set((state) => ({ passengers: number })),
   addFlight: (search) => set((state) => ({ flightData: search })),
@@ -20,4 +29,4 @@ const useFlightStore = create((set) => ({
   removeFiltered: () => set((state) => ({ filteredResult: null })),
 }));
 
-export default useFlightStore
+export default useFlightStore;
