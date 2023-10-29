@@ -10,6 +10,7 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
+    "lint": "eslint --ext .js,.ts --ignore-path .gitignore --fix ./",
     "prepare": "cd .. && husky install server/.husky"
   },
   "author": "oluatosin akande <aktosin1@gmail.com>",
